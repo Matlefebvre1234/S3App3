@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.net.*;
+import java.util.ArrayList;
 
 public class PhysiqueLayer extends ProtocolLayer {
 
@@ -13,7 +14,7 @@ public class PhysiqueLayer extends ProtocolLayer {
     }
 
     @Override
-    public void encapsulation(Packet packet) {
+    public ArrayList<Byte> encapsulation(Packet packet) {
         byte[] a = new byte[32];
         a[0] = 4;
         a[1] =5;
@@ -50,7 +51,7 @@ public class PhysiqueLayer extends ProtocolLayer {
             e.printStackTrace();
         }
 
-
+        return packet.packet;
     }
 
     public void recevoirMessage()

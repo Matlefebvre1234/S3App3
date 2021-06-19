@@ -1,6 +1,7 @@
 import java.io.*;
 import java.lang.reflect.Array;
 import java.net.*;
+import java.sql.ResultSet;
 import java.util.*;
 import java.net.NetworkInterface;
 import java.util.zip.CRC32;
@@ -26,6 +27,11 @@ public class Client {
         DatalinkLayer layer = new DatalinkLayer();
         Packet test = new Packet();
         test.packet.add((byte)0x0F);
+        test.packet.add((byte)0x3F);
+        test.packet.add((byte)0x70);
+        test.packet.add((byte)0x27);
+        test.packet.add((byte)0x23);
+        test.packet.add((byte)0x0d);
 
         //layer.encapsulation(test);
 
@@ -34,6 +40,13 @@ public class Client {
 
         physique.encapsulation(test);
         physique.desencapsulation(test);
+
+        DatalinkLayer datalink = new DatalinkLayer();
+
+        ArrayList<Byte> resultat = datalink.encapsulation(test);
+        Packet packetTest = new Packet();
+        packetTest.packet = resultat;
+        datalink.desencapsulation(packetTest);
 
     }
 

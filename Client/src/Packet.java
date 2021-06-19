@@ -29,6 +29,29 @@ public class Packet {
         }
     }
 
+    public ArrayList<Byte> listToArray(byte[] list) {
+        ArrayList<Byte> array = new ArrayList<Byte>();
+
+        for(int i=0;i<list.length;i++)
+        {
+            array.add(list[i]);
+        }
+
+        return array;
+    }
+
+    public  byte[] arrayToList(ArrayList<Byte> array) {
+
+        byte[] list = new byte[array.size()];
+
+        for(int i=0;i<array.size();i++)
+        {
+            list[i] = array.get(i);
+        }
+
+        return list;
+    }
+
 
 
     public byte[] getByte(int debut,int fin)

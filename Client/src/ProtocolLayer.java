@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public abstract class ProtocolLayer {
 
     ProtocolLayer layerDessus;
@@ -9,7 +11,7 @@ public abstract class ProtocolLayer {
 
     }
 
-     public abstract void encapsulation(Packet packet);
+     public abstract ArrayList<Byte> encapsulation(Packet packet);
 
 
     public abstract void desencapsulation(Packet packet);
