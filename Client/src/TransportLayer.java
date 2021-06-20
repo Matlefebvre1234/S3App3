@@ -134,6 +134,45 @@ public class TransportLayer extends ProtocolLayer{
 
     @Override
     public void desencapsulation(Packet packet) {
+        ArrayList<Byte> destination = new ArrayList<>();
+        ArrayList<Byte> source = new ArrayList<>();
+        ArrayList<Byte> seqRes = new ArrayList<>();
+        ArrayList<Byte> ackRes = new ArrayList<>();
+        ArrayList<Byte> nbFrag = new ArrayList<>();
+        ArrayList<Byte> qteFrag = new ArrayList<>();
+
+        for(int i = 0; i < 2; i++){
+            source.add(packet.packet.get(i));
+        }
+
+        for(int i = 2; i < 4; i++){
+            destination.add(packet.packet.get(i));
+        }
+
+        System.out.println((short) ((source.get(0) << 8) | (source.get(1) & 0xFF)));
+        System.out.println((short) ((destination.get(0) << 8) | (destination.get(1) & 0xFF)));
+
+        for(int i = 4; i < 8; i++){
+            seqRes.add(packet.packet.get(i));
+        }
+
+        for(int i = 8; i < 12; i++){
+            ackRes.add(packet.packet.get(i));
+        }
+
+        System.out.println(seqRes);
+        System.out.println(ackRes);
+
+        for(int i = 12; i < 16; i++){
+            nbFrag.add(packet.packet.get(i));
+        }
+
+        for(int i = 16; i < 20; i++){
+            qteFrag.add(packet.packet.get(i));
+        }
+
+        System.out.println(nbFrag);
+        System.out.println(qteFrag);
 
     }
 

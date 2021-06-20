@@ -422,7 +422,7 @@ public class Client {
 
 
         TransportLayer transportLayer = new TransportLayer();
-        transportLayer.encapsulation(test);
+        transportLayer.desencapsulation(test);
 
 
     }
