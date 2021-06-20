@@ -1,4 +1,3 @@
-import javax.crypto.spec.PSource;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -7,22 +6,30 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
 
 public class DatalinkLayer extends ProtocolLayer{
 
-
+    boolean ark;
+    boolean recepteurArk;
+    int compteur;
+    ScheduledExecutorService executor;
     public DatalinkLayer()
     {
-
+        ark = false;
+        recepteurArk = false;
+        compteur = 0;
     }
 
     @Override
     public void encapsulation(Packet packet) {
 
         ArrayList<Byte> packetFrame = new ArrayList<Byte>();
-        String[] args = QuoteServerThread.getArgs();
+        String[] args = QuoteServer.getArgs();
 
 
         try{
@@ -76,6 +83,25 @@ public class DatalinkLayer extends ProtocolLayer{
             Packet envoyerPacket = new Packet();
             envoyerPacket.setPacket(packetFrame);
             layerDessous.encapsulation(envoyerPacket);
+            recepteurArk = true;
+            Runnable helloRunnable = new Runnable() {
+                public void run() {
+                    if(!ark)
+                    {
+                        System.out.println("retransmission");
+                        layerDessous.encapsulation(envoyerPacket);
+                    }
+                    else {
+                        System.out.println("Transmission Confirmer");
+                        executor.shutdown();
+                        ark = false;
+                    }
+
+                }
+            };
+
+            executor = Executors.newScheduledThreadPool(1);
+            executor.scheduleAtFixedRate(helloRunnable, 0, 5, TimeUnit.SECONDS);
 
 
 
@@ -106,14 +132,31 @@ public class DatalinkLayer extends ProtocolLayer{
 
     @Override
     public void desencapsulation(Packet packet) {
+
+        //vérififier si reponse Ark
+        if(packet.packet.size() == 18 && recepteurArk)
+        {
+            ark = true;
+            recepteurArk = false;
+            return;
+        }
+
         //Lorsque on recoit un message
 
         //Verifier checksum
-        Boolean checksum = verifierChecksum(packet);
+        Boolean checksum = false;
+        /////////////VALIDATION/////////////
+       /* if(compteur<2)
+        {
+            checksum = verifierChecksumTruckee(packet);
+            compteur++;
+        }
+        else */checksum = verifierChecksum(packet);
 
+        if(!checksum) {return;}
         //Adresses MAC
-        ArrayList<Byte> destination = new ArrayList<>();
-        ArrayList<Byte> source = new ArrayList<>();
+        ArrayList<Byte> destination = new ArrayList<Byte>();
+        ArrayList<Byte> source = new ArrayList<Byte>();
 
         for(int i = 0; i < 6; i++){
             destination.add(packet.packet.get(i));
@@ -123,17 +166,33 @@ public class DatalinkLayer extends ProtocolLayer{
             source.add(packet.packet.get(i));
         }
 
-        ArrayList<Byte> type = new ArrayList<>();
+        ArrayList<Byte> type = new ArrayList<Byte>();
 
         for(int i = 12; i < 14; i++){
             type.add(packet.packet.get(i));
         }
 
-        ArrayList<Byte> data = new ArrayList<>();
+        ArrayList<Byte> data = new ArrayList<Byte>();
 
         for(int i = 14; i < packet.packet.size() - 4; i++){
             data.add(packet.packet.get(i));
         }
+
+        ArrayList<Byte> crc = new ArrayList<Byte>();
+        for(int i = packet.packet.size() - 4;i<packet.packet.size();i++)
+        {
+            crc.add(packet.packet.get(i));
+        }
+
+        //Creation accuse de reception
+        ArrayList<Byte> accuseReception = new ArrayList<Byte>();
+        accuseReception.addAll(source);
+        accuseReception.addAll(destination);
+        accuseReception.addAll(type);
+        accuseReception.addAll(crc);
+        Packet arkEnvoi = new Packet();
+        arkEnvoi.setPacket(accuseReception);
+        layerDessous.encapsulation(arkEnvoi);
 
         StringBuilder sb = new StringBuilder();
 
@@ -199,6 +258,58 @@ public class DatalinkLayer extends ProtocolLayer{
 
     }
 
+    public Boolean verifierChecksumTruckee(Packet packet){
+        ArrayList<Byte> checksumRecu = new ArrayList<Byte>();
+
+        for(int i = 4; i > 0; i--)
+        {
+            checksumRecu.add(packet.packet.get(packet.packet.size()-i));
+        }
+
+        //Changer un byte
+        checksumRecu.set(0,(byte) 0x54);
+        ArrayList<Byte> restePacquet = new ArrayList<>();
+
+        for(int i = 0; i < packet.packet.size()-4; i++){
+            restePacquet.add(packet.packet.get(i));
+        }
+
+        byte[] data = packet.arrayToList(restePacquet);
+        long checksumCalculeeLong = getCRC32Checksum(data);
+        byte[] checksumCalculeeByte = null;
+        try{
+            checksumCalculeeByte = longToByteArray(checksumCalculeeLong);
+        }
+
+        catch(IOException e)
+        {
+            System.out.println(e.getMessage());
+        }
+
+        ArrayList<Byte>checksumCalculee = new ArrayList<>();
+        Boolean debut = false;
+        for(int i=0;i< checksumCalculeeByte.length;i++)
+        {
+            if(checksumCalculeeByte[i] != 0) debut = true;
+            if(debut) checksumCalculee.add(checksumCalculeeByte[i]);
+
+        }
+
+        if(checksumRecu.get(0) == checksumCalculee.get(0) && checksumRecu.get(1) == checksumCalculee.get(1) && checksumRecu.get(2) == checksumCalculee.get(2) && checksumRecu.get(3) == checksumCalculee.get(3))
+        {
+            System.out.println("Bon checksum");
+            return true;
+        }
+
+        else{
+            System.out.println(checksumRecu);
+            System.out.println(checksumCalculee);
+            System.out.println("Mauvais checksum");
+            return false;
+        }
+
+    }
+
     private long getCRC32Checksum(byte[] bytes) {
         Checksum crc32 = new CRC32();
         crc32.update(bytes, 0, bytes.length);
@@ -212,5 +323,6 @@ public class DatalinkLayer extends ProtocolLayer{
         dos.flush();
         return bos.toByteArray();
     }
+
 
 }

@@ -18,14 +18,9 @@ public class QuoteServerThread extends Thread {
 
     }
 
-    private static String[] savedArgs;
-    public static String[] getArgs() {
-        return savedArgs;
-    }
 
     public void run() {
 
-        savedArgs = getArgs();
         PhysiqueLayer physique = new PhysiqueLayer();
         DatalinkLayer datalink = new DatalinkLayer();
 

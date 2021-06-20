@@ -30,7 +30,7 @@ public class Client {
         test.packet.add((byte)0x3F);
         test.packet.add((byte)0x70);
         test.packet.add((byte)0x27);
-        test.packet.add((byte)0x23);
+       /* test.packet.add((byte)0x23);
         test.packet.add((byte)0x0d);
         test.packet.add((byte)0x0F);
         test.packet.add((byte)0x3F);
@@ -416,13 +416,19 @@ public class Client {
         test.packet.add((byte)0x70);
         test.packet.add((byte)0x27);
         test.packet.add((byte)0x23);
-        test.packet.add((byte)0x0d);
-
-        //layer.encapsulation(test);
-
+        test.packet.add((byte)0x0d);*/
 
         TransportLayer transportLayer = new TransportLayer();
-        transportLayer.encapsulation(test);
+        PhysiqueLayer physiqueLayer = new PhysiqueLayer();
+        layer.setLayerDessous(physiqueLayer);
+        physiqueLayer.setLayerDessus(layer);
+
+        layer.encapsulation(test);
+
+
+
+
+        //transportLayer.encapsulation(test);
 
 
     }

@@ -1,4 +1,3 @@
-import javax.crypto.spec.PSource;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -7,16 +6,21 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
 
 public class DatalinkLayer extends ProtocolLayer{
-    
+
+    boolean ark;
+    boolean recepteurArk;
+    ScheduledExecutorService executor;
     public DatalinkLayer()
     {
-
+        ark = false;
+        recepteurArk = false;
     }
 
     @Override
@@ -77,16 +81,26 @@ public class DatalinkLayer extends ProtocolLayer{
             Packet envoyerPacket = new Packet();
             envoyerPacket.setPacket(packetFrame);
 
-            layerDessous.encapsulation(envoyerPacket);
-            TimerTask task = new TimerTask() {
+            recepteurArk = true;
+            Runnable helloRunnable = new Runnable() {
                 public void run() {
+                    if(!ark)
+                    {
+                        layerDessous.encapsulation(envoyerPacket);
+
+                    }
+                    else {
+                        System.out.println("transmission CONFIRMER");
+                        executor.shutdown();
+                        ark = false;
+                    }
 
                 }
             };
-            Timer timer = new Timer("Timer");
 
-            long delay = 1000L;
-            timer.schedule(task, delay);
+            executor = Executors.newScheduledThreadPool(1);
+            executor.scheduleAtFixedRate(helloRunnable, 0, 2, TimeUnit.SECONDS);
+
         }
         catch (UnknownHostException | SocketException e) {
             e.printStackTrace();
@@ -97,8 +111,18 @@ public class DatalinkLayer extends ProtocolLayer{
 
     }
 
+
     @Override
     public void desencapsulation(Packet packet) {
+
+        //vérififier si reponse Ark
+        if(packet.packet.size() == 18 && recepteurArk)
+        {
+            ark = true;
+            recepteurArk = false;
+            return;
+        }
+
         //Lorsque on recoit un message
 
         //Verifier checksum
@@ -136,6 +160,21 @@ public class DatalinkLayer extends ProtocolLayer{
                     (i < packet.packet.size() - 1) ? " " : ""));
         }
 
+        ArrayList<Byte> crc = new ArrayList<Byte>();
+        for(int i = packet.packet.size() - 4;i<packet.packet.size();i++)
+        {
+            crc.add(packet.packet.get(i));
+        }
+
+        //Creation accuse de reception
+        ArrayList<Byte> accuseReception = new ArrayList<Byte>();
+        accuseReception.addAll(source);
+        accuseReception.addAll(destination);
+        accuseReception.addAll(type);
+        accuseReception.addAll(crc);
+        Packet arkEnvoi = new Packet();
+        arkEnvoi.setPacket(accuseReception);
+        layerDessous.encapsulation(arkEnvoi);
 
         System.out.println("tamere"+sb);
        // System.out.println("donnees : " + data);

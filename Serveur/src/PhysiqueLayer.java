@@ -18,8 +18,9 @@ public class PhysiqueLayer extends ProtocolLayer {
         byte[] a = new byte[32];
         a[0] = 4;
         a[1] =5;
+        System.out.println(QuoteServer.getArgs());
+        String[] args = QuoteServer.getArgs();
 
-        String[] args = QuoteServerThread.getArgs();
         try {
 
             DatagramSocket socket2 = new DatagramSocket();
@@ -34,6 +35,9 @@ public class PhysiqueLayer extends ProtocolLayer {
             }
             DatagramPacket message = new DatagramPacket(messageFinal,messageFinal.length, address, 25001);
             socket2.send(message);
+
+
+            recevoirMessage();
         }
         catch (SocketException e) {
             e.printStackTrace();

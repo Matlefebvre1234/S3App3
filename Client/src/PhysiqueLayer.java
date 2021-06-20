@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class PhysiqueLayer extends ProtocolLayer {
 
-    DatagramSocket socket;
+     DatagramSocket socket;
     public PhysiqueLayer(){
         try {
             socket = new DatagramSocket(25001);
@@ -34,19 +34,25 @@ public class PhysiqueLayer extends ProtocolLayer {
             }
             DatagramPacket message = new DatagramPacket(messageFinal,messageFinal.length, address, 25000);
             socket2.send(message);
+
+            socket.setSoTimeout(2000);
+            recevoirMessage();
+            socket.setSoTimeout(0);
+
+
         }
         catch (SocketException e) {
-            e.printStackTrace();
+            System.out.println("asda");
         } catch (UnknownHostException e) {
-            e.printStackTrace();
+            System.out.println("a");
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("a");
         }
 
 
     }
 
-    public void recevoirMessage()
+    public void recevoirMessage() throws SocketTimeoutException
     {
         try {
             byte[] rep = new byte[256];
