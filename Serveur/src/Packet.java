@@ -59,7 +59,7 @@ public class Packet {
         if(debut != fin)
         {
             int index =0;
-            byte[] tableau = new byte[fin-debut];
+            byte[] tableau = new byte[fin -debut];
 
             for(int i =debut;i<fin;i++)
             {
@@ -71,6 +71,52 @@ public class Packet {
 
     }
 
+
+    public byte[] getByte()
+    {
+
+        byte[] message = new byte[packet.size()];
+        for(int i=0;i<packet.size();i++)
+        {
+            message[i] = packet.get(i);
+        }
+
+        return message;
+
+    }
+
+
+    public void afficherPacket(Packet packet)
+    {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < packet.packet.size(); i++) {
+            sb.append(String.format(
+                    "%02X%s", packet.packet.get(i),
+                    (i < packet.packet.size() - 1) ? " " : ""));
+        }
+    }
+
+    public static void afficherPacket(ArrayList<Byte> packet)
+    {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < packet.size(); i++) {
+            sb.append(String.format(
+                    "%02X%s", packet.get(i),
+                    (i < packet.size() - 1) ? " " : ""));
+        }
+        System.out.println(sb.toString());
+    }
+
+    public static void afficherPacket(byte[] arraybyte)
+    {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < arraybyte.length; i++) {
+            sb.append(String.format(
+                    "%02X%s", arraybyte[i],
+                    (i < arraybyte.length - 1) ? " " : ""));
+        }
+        System.out.println(sb.toString());
+    }
 
 
 

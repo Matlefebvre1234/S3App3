@@ -178,13 +178,19 @@ public class DatalinkLayer extends ProtocolLayer{
             data.add(packet.packet.get(i));
         }
 
+        //Envoyer data couche supérieur
+
+        Packet dataPourCoucheSuperieur = new Packet();
+        dataPourCoucheSuperieur.setPacket(data);
+        layerDessus.desencapsulation(dataPourCoucheSuperieur);
+
         ArrayList<Byte> crc = new ArrayList<Byte>();
         for(int i = packet.packet.size() - 4;i<packet.packet.size();i++)
         {
             crc.add(packet.packet.get(i));
         }
 
-        //Creation accuse de reception
+        //Creation accuse de reception positif
         ArrayList<Byte> accuseReception = new ArrayList<Byte>();
         accuseReception.addAll(source);
         accuseReception.addAll(destination);

@@ -70,7 +70,18 @@ public class Packet {
         else return null;
 
     }
+    public byte[] getByte()
+    {
 
+        byte[] message = new byte[packet.size()];
+        for(int i=0;i<packet.size();i++)
+        {
+            message[i] = packet.get(i);
+        }
+
+        return message;
+
+    }
     public void afficherPacket(Packet packet)
     {
         StringBuilder sb = new StringBuilder();

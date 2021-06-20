@@ -1,11 +1,4 @@
 import java.io.*;
-import java.lang.reflect.Array;
-import java.net.*;
-import java.sql.ResultSet;
-import java.util.*;
-import java.net.NetworkInterface;
-import java.util.zip.CRC32;
-import java.util.zip.Checksum;
 
 public class Client {
 
@@ -24,7 +17,7 @@ public class Client {
 
 
 
-        DatalinkLayer layer = new DatalinkLayer();
+
         Packet test = new Packet();
         test.packet.add((byte)0x0F);
         test.packet.add((byte)0x3F);
@@ -418,12 +411,17 @@ public class Client {
         test.packet.add((byte)0x23);
         test.packet.add((byte)0x0d);*/
 
-        TransportLayer transportLayer = new TransportLayer();
+
+        DatalinkLayer layer = new DatalinkLayer();
+        ApplicationLayer application = new ApplicationLayer();
         PhysiqueLayer physiqueLayer = new PhysiqueLayer();
+        application.setLayerDessous(layer);
+        layer.setLayerDessus(application);
         layer.setLayerDessous(physiqueLayer);
         physiqueLayer.setLayerDessus(layer);
+       // TransportLayer transportLayer = new TransportLayer();
 
-        layer.encapsulation(test);
+        application.encapsulation("file.txt");
 
 
 
