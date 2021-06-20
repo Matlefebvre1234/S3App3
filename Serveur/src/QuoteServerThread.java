@@ -18,37 +18,25 @@ public class QuoteServerThread extends Thread {
 
     }
 
+    private static String[] savedArgs;
+    public static String[] getArgs() {
+        return savedArgs;
+    }
+
     public void run() {
+
+        savedArgs = getArgs();
+        PhysiqueLayer physique = new PhysiqueLayer();
+        DatalinkLayer datalink = new DatalinkLayer();
+
+        physique.setLayerDessus(datalink);
+        datalink.setLayerDessous(physique);
+
 
          do
         {
-            byte[] buf = new byte[32];
-            // receive request
-            DatagramPacket packet = new DatagramPacket(buf, buf.length);
-            try {
-                socket.receive(packet);
-                String received = new String(packet.getData(), 0, packet.getLength());
+            physique.recevoirMessage();
 
-                for (byte c: packet.getData()
-                ) {
-                    System.out.print(Integer.toBinaryString(c) + " ");
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            // send the response to the client at "address" and "port"
-            InetAddress address = packet.getAddress();
-            int port = packet.getPort();
-
-            String reponse = "reponse Serveur";
-            byte[] rep = reponse.getBytes();
-            packet = new DatagramPacket(rep, rep.length, address, port);
-            try {
-                socket.send(packet);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }while (!stop);
 
     }

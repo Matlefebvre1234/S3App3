@@ -71,37 +71,7 @@ public class Packet {
 
     }
 
-    public void afficherPacket(Packet packet)
-    {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < packet.packet.size(); i++) {
-            sb.append(String.format(
-                    "%02X%s", packet.packet.get(i),
-                    (i < packet.packet.size() - 1) ? " " : ""));
-        }
-    }
 
-    public static void afficherPacket(ArrayList<Byte> packet)
-    {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < packet.size(); i++) {
-            sb.append(String.format(
-                    "%02X%s", packet.get(i),
-                    (i < packet.size() - 1) ? " " : ""));
-        }
-        System.out.println(sb.toString());
-    }
-
-    public static void afficherPacket(byte[] arraybyte)
-    {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < arraybyte.length; i++) {
-            sb.append(String.format(
-                    "%02X%s", arraybyte[i],
-                    (i < arraybyte.length - 1) ? " " : ""));
-        }
-        System.out.println(sb.toString());
-    }
 
 
 }

@@ -9,11 +9,11 @@ import java.util.zip.Checksum;
 
 public class Client {
 
-
     private static String[] savedArgs;
     public static String[] getArgs() {
         return savedArgs;
     }
+
 
     public static void main( String[] args) throws IOException {
         savedArgs = args;
@@ -33,20 +33,18 @@ public class Client {
         test.packet.add((byte)0x23);
         test.packet.add((byte)0x0d);
 
-        //layer.encapsulation(test);
-
-
         PhysiqueLayer physique = new PhysiqueLayer();
+        layer.setLayerDessous(physique);
+        physique.setLayerDessus(layer);
+        layer.encapsulation(test);
 
-        physique.encapsulation(test);
-        physique.desencapsulation(test);
 
-        DatalinkLayer datalink = new DatalinkLayer();
 
-        ArrayList<Byte> resultat = datalink.encapsulation(test);
-        Packet packetTest = new Packet();
-        packetTest.packet = resultat;
-        datalink.desencapsulation(packetTest);
+
+
+      //  physique.encapsulation(test);
+       // physique.desencapsulation(test);
+
 
     }
 

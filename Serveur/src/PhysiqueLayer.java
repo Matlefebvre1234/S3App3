@@ -7,7 +7,7 @@ public class PhysiqueLayer extends ProtocolLayer {
     DatagramSocket socket;
     public PhysiqueLayer(){
         try {
-            socket = new DatagramSocket(25001);
+            socket = new DatagramSocket(25000);
         } catch (SocketException e) {
             e.printStackTrace();
         }
@@ -19,7 +19,7 @@ public class PhysiqueLayer extends ProtocolLayer {
         a[0] = 4;
         a[1] =5;
 
-        String[] args = Client.getArgs();
+        String[] args = QuoteServerThread.getArgs();
         try {
 
             DatagramSocket socket2 = new DatagramSocket();
@@ -32,7 +32,7 @@ public class PhysiqueLayer extends ProtocolLayer {
                 messageFinal[i] = packet.packet.get(i);
 
             }
-            DatagramPacket message = new DatagramPacket(messageFinal,messageFinal.length, address, 25000);
+            DatagramPacket message = new DatagramPacket(messageFinal,messageFinal.length, address, 25001);
             socket2.send(message);
         }
         catch (SocketException e) {

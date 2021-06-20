@@ -7,13 +7,12 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
 
 public class DatalinkLayer extends ProtocolLayer{
-    
+
+
     public DatalinkLayer()
     {
 
@@ -23,7 +22,7 @@ public class DatalinkLayer extends ProtocolLayer{
     public void encapsulation(Packet packet) {
 
         ArrayList<Byte> packetFrame = new ArrayList<Byte>();
-        String[] args = Client.getArgs();
+        String[] args = QuoteServerThread.getArgs();
 
 
         try{
@@ -76,17 +75,25 @@ public class DatalinkLayer extends ProtocolLayer{
             //Envoyer couche physique
             Packet envoyerPacket = new Packet();
             envoyerPacket.setPacket(packetFrame);
-
             layerDessous.encapsulation(envoyerPacket);
-            TimerTask task = new TimerTask() {
-                public void run() {
 
-                }
-            };
-            Timer timer = new Timer("Timer");
 
-            long delay = 1000L;
-            timer.schedule(task, delay);
+
+            //affichage
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < packetFrame.size(); i++) {
+                sb.append(String.format(
+                        "%02X%s", packetFrame.get(i),
+                        (i < packetFrame.size() - 1) ? " " : ""));
+            }
+
+
+
+            // print the final String containing the MAC Address
+            System.out.println(sb.toString());
+
+
+
         }
         catch (UnknownHostException | SocketException e) {
             e.printStackTrace();
