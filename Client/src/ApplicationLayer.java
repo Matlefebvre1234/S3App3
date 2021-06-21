@@ -2,10 +2,11 @@ import java.io.*;
 
 public class ApplicationLayer extends ProtocolLayer{
 
-
+    FileWriter myWriter;
+    boolean nomRecu;
     public ApplicationLayer()
     {
-
+        nomRecu =false;
     }
 
 
@@ -22,9 +23,6 @@ public class ApplicationLayer extends ProtocolLayer{
     public  void sauvegarderPacketFichier(Packet packet)
     {
         try {
-            FileWriter myWriter = new FileWriter("nomFichier.txt");
-
-
             byte[] message = packet.getByte();
             System.out.println(packet.packet.get(0));
             myWriter.write(new String(message),0,message.length-1);
@@ -34,6 +32,17 @@ public class ApplicationLayer extends ProtocolLayer{
             System.out.println("Erreur");
             e.printStackTrace();
         }
+    }
+    private void creerFichier(Packet packet)
+    {
+        byte[] nomFichier = packet.getByte();
+        String nomFichierString  = new String(nomFichier,0,nomFichier.length-1);
+        try {
+            myWriter = new FileWriter(nomFichierString);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -51,7 +60,12 @@ public class ApplicationLayer extends ProtocolLayer{
     @Override
     public void desencapsulation(Packet packet) {
 
-        sauvegarderPacketFichier(packet);
+        if (!nomRecu)creerFichier(packet);
+        if (nomRecu){
+            sauvegarderPacketFichier(packet);
+            nomRecu = false;
+        }
+
     }
 
     private StringBuffer lireFichier(String nomFichier)

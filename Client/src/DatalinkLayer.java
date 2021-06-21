@@ -161,6 +161,13 @@ public class DatalinkLayer extends ProtocolLayer{
                     (i < packet.packet.size() - 1) ? " " : ""));
         }
 
+        //Envoyer data couche supérieur
+
+        Packet dataPourCoucheSuperieur = new Packet();
+        dataPourCoucheSuperieur.setPacket(data);
+        layerDessus.desencapsulation(dataPourCoucheSuperieur);
+
+
         ArrayList<Byte> crc = new ArrayList<Byte>();
         for(int i = packet.packet.size() - 4;i<packet.packet.size();i++)
         {
