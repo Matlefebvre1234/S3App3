@@ -320,9 +320,9 @@ public class DatalinkLayer extends ProtocolLayer{
     {
         try {
             myWriter= new BufferedWriter(new FileWriter("liasonDeDonnes.log.txt", true));
-            myWriter.write(message +  "  " +new java.util.Date());
+            myWriter.write(message +  "  " +new java.util.Date() +"\n");
             myWriter.close();
-            System.out.println(message+"\n");
+            System.out.println(message);
         } catch (IOException e) {
             System.out.println("Erreur");
             e.printStackTrace();
