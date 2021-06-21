@@ -35,6 +35,9 @@ public class PhysiqueLayer extends ProtocolLayer {
 
             }
             DatagramPacket message = new DatagramPacket(messageFinal,messageFinal.length, address, 25001);
+            packet.afficherPacket(messageFinal);
+            System.out.println("ENVOI");
+
             socket2.send(message);
 
             compteurRecevoir++;
@@ -72,7 +75,7 @@ public class PhysiqueLayer extends ProtocolLayer {
             nouveauPacket.setPacket(repCorrige);
             desencapsulation(nouveauPacket);
             String received = new String(packet.getData(), 0, packet.getLength());
-            System.out.println("Serveur:"+ received);
+
 
         }
         catch (IOException e) {

@@ -97,7 +97,7 @@ public class DatalinkLayer extends ProtocolLayer{
             layerDessous.encapsulation(envoyerPacket);
             packetEnvoyer++;
             recepteurArk = true;
-            Runnable helloRunnable = new Runnable() {
+           /* Runnable helloRunnable = new Runnable() {
                 public void run() {
                     if(!ark)
                     {
@@ -109,7 +109,7 @@ public class DatalinkLayer extends ProtocolLayer{
             };
 
             executor = Executors.newScheduledThreadPool(1);
-            executor.scheduleAtFixedRate(helloRunnable, 0, 5, TimeUnit.SECONDS);
+            executor.scheduleAtFixedRate(helloRunnable, 0, 5, TimeUnit.SECONDS);*/
 
         }
         catch (UnknownHostException | SocketException e) {
@@ -194,6 +194,7 @@ public class DatalinkLayer extends ProtocolLayer{
         arkEnvoi.setPacket(accuseReception);
         sauvegarderLog("Acusse de Reception Positif Envoye");
         packetEnvoyer++;
+        System.out.println("envoie Couche physique datalink");
         layerDessous.encapsulation(arkEnvoi);
 
 

@@ -134,9 +134,8 @@ public class TransportLayer extends ProtocolLayer{
         int tempqte = convertByteArrayToInt2(packet.arrayToList(qteFrag));
 
         System.out.println("Numero: " + tempFrag);
-        System.out.println("Qte: " + qteFrag);
 
-        OK = desencapsulationFragments(data, tempFrag, tempqte);
+        OK = true;//desencapsulationFragments(data, tempFrag, tempqte);
 
         //Creation accuse de reception positif
         ArrayList<Byte> accuseReception = new ArrayList<Byte>();
@@ -170,7 +169,10 @@ public class TransportLayer extends ProtocolLayer{
         arkEnvoi.setPacket(accuseReception);
 
 
+        System.out.println("Accuse Transport");
+        System.out.println(layerDessous.getClass());
         layerDessous.encapsulation(arkEnvoi);
+
     }
 
     public Boolean desencapsulationFragments(ArrayList<Byte> data, int nbFrag, int qteFrag) {
@@ -229,7 +231,7 @@ public class TransportLayer extends ProtocolLayer{
             i++;
         }
 
-        System.out.println(new String(array));
+       // System.out.println(new String(array));
 
         return true;
     };
