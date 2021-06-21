@@ -170,7 +170,7 @@ public class TransportLayer extends ProtocolLayer{
         arkEnvoi.setPacket(accuseReception);
 
 
-        //layerDessous.encapsulation(arkEnvoi);
+        layerDessous.encapsulation(arkEnvoi);
     }
 
     public Boolean desencapsulationFragments(ArrayList<Byte> data, int nbFrag, int qteFrag) {

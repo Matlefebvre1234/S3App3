@@ -172,7 +172,7 @@ public class DatalinkLayer extends ProtocolLayer{
             crc.add(packet.packet.get(i));
         }
 
-        //Creation accuse de reception
+       /* //Creation accuse de reception
         ArrayList<Byte> accuseReception = new ArrayList<Byte>();
         accuseReception.addAll(source);
         accuseReception.addAll(destination);
@@ -180,10 +180,7 @@ public class DatalinkLayer extends ProtocolLayer{
         accuseReception.addAll(crc);
         Packet arkEnvoi = new Packet();
         arkEnvoi.setPacket(accuseReception);
-        layerDessous.encapsulation(arkEnvoi);
-
-        System.out.println("Packet qui a ete checksum: "+sb);
-       // System.out.println("donnees : " + data);
+        layerDessous.encapsulation(arkEnvoi);*/
 
     }
 

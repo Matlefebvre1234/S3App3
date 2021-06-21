@@ -5,7 +5,9 @@ import java.util.ArrayList;
 public class PhysiqueLayer extends ProtocolLayer {
 
     DatagramSocket socket;
+    int compteurRecevoir;
     public PhysiqueLayer(){
+        compteurRecevoir=0;
         try {
             socket = new DatagramSocket(25000);
         } catch (SocketException e) {
@@ -35,9 +37,13 @@ public class PhysiqueLayer extends ProtocolLayer {
             DatagramPacket message = new DatagramPacket(messageFinal,messageFinal.length, address, 25001);
             socket2.send(message);
 
-
-            recevoirMessage();
-        }
+            compteurRecevoir++;
+            if(compteurRecevoir ==2)
+            {
+                recevoirMessage();
+                compteurRecevoir=0;
+            }
+    }
         catch (SocketException e) {
             e.printStackTrace();
         } catch (UnknownHostException e) {

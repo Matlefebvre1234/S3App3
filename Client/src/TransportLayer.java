@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 public class TransportLayer extends ProtocolLayer{
 
-
+    boolean packerVerifier;
     int ack;
     int limiteErreurs;
     byte[] ackByte;
@@ -33,6 +33,7 @@ public class TransportLayer extends ProtocolLayer{
         portDestination = 25001;
         ackDataLink = false;
         indexPacket =0;
+        packerVerifier = true;
     }
 
     public ArrayList<Byte> encapsulationFragments(Packet packet, int nbFrag, double qteFrag) {
@@ -103,9 +104,10 @@ public class TransportLayer extends ProtocolLayer{
         double finalNbFragments = nbFragments;
         Runnable envoyerPacket = new Runnable() {
             public void run() {
-                if(layerDessous.getReadyForNextPacket())
+                if(layerDessous.getReadyForNextPacket() && packerVerifier)
                 {
                     encapsulationFragments(listPackets.get(getIndexPacket()), getIndexPacket(), finalNbFragments);
+                    packerVerifier = false;
                     System.out.println("Packet: " + getIndexPacket());
                     System.out.println("Nombre a envoyer: " + finalNbFragments);
                     IncrementeIndexPacket();
@@ -169,11 +171,13 @@ public class TransportLayer extends ProtocolLayer{
         if(convertByteArrayToInt2(packet.arrayToList(ackRes)) == 1)
         {
             System.out.println("continuer envoyer fragments");
+            packerVerifier = true;
             ackDataLink = true;
         }
 
         else{
             System.out.println("Erreur, renvoyer ");
+            packerVerifier =false;
             ackDataLink = false;
         }
 

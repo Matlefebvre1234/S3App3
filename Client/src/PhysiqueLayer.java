@@ -36,9 +36,10 @@ public class PhysiqueLayer extends ProtocolLayer {
 
             socket2.send(message);
 
-            socket.setSoTimeout(2000);
+            socket.setSoTimeout(3000);
             recevoirMessage();
-            socket.setSoTimeout(0);
+            recevoirMessage();
+
 
 
         }
