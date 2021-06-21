@@ -4,11 +4,11 @@ public abstract class ProtocolLayer {
 
     ProtocolLayer layerDessus;
     ProtocolLayer layerDessous;
-
+    boolean ReadyForNextPacket;
     Packet packet;
     public ProtocolLayer()
     {
-
+        ReadyForNextPacket = true;
     }
 
      public abstract void encapsulation(Packet packet);
@@ -33,5 +33,13 @@ public abstract class ProtocolLayer {
     public void setLayerDessous(ProtocolLayer layer)
     {
         layerDessous = layer;
+    }
+
+    public Boolean getReadyForNextPacket() {
+        return layerDessous.ReadyForNextPacket;
+    }
+
+    public void setReadyForNextPacket(Boolean ack){
+        ReadyForNextPacket = ack;
     }
 }

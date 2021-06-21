@@ -28,6 +28,7 @@ public class DatalinkLayer extends ProtocolLayer{
         int packetRecu =0;
         int packetEnvoyer =0;
         int packetErreur =0;
+        setReadyForNextPacket(true);
 
         try {
              myWriter= new BufferedWriter(new FileWriter("liasonDeDonnes.log.txt", true));
@@ -100,15 +101,10 @@ public class DatalinkLayer extends ProtocolLayer{
                 public void run() {
                     if(!ark)
                     {
-                        System.out.println("retransmission");
+                        setReadyForNextPacket(false);
                         layerDessous.encapsulation(envoyerPacket);
-                    }
-                    else {
-                        System.out.println("Transmission Confirmer");
-                        executor.shutdown();
-                        ark = false;
-                    }
 
+                    }
                 }
             };
 
@@ -135,6 +131,10 @@ public class DatalinkLayer extends ProtocolLayer{
         {
             ark = true;
             recepteurArk = false;
+            System.out.println("transmission CONFIRMEE");
+            executor.shutdown();
+            ark = false;
+            setReadyForNextPacket(true);
             return;
         }
 
@@ -198,7 +198,6 @@ public class DatalinkLayer extends ProtocolLayer{
         accuseReception.addAll(crc);
         Packet arkEnvoi = new Packet();
         arkEnvoi.setPacket(accuseReception);
-        System.out.println("aawd");
         sauvegarderLog("Acusse de Reception Positif Envoye");
         packetEnvoyer++;
         layerDessous.encapsulation(arkEnvoi);

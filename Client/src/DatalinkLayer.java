@@ -21,7 +21,7 @@ public class DatalinkLayer extends ProtocolLayer{
     {
         ark = false;
         recepteurArk = false;
-        setAcknowledge(true);
+        setReadyForNextPacket(true);
     }
 
     @Override
@@ -86,16 +86,10 @@ public class DatalinkLayer extends ProtocolLayer{
                 public void run() {
                     if(!ark)
                     {
+                        setReadyForNextPacket(false);
                         layerDessous.encapsulation(envoyerPacket);
 
                     }
-                    else {
-                        System.out.println("transmission CONFIRMEE");
-                        executor.shutdown();
-                        ark = false;
-                        setAcknowledge(true);
-                    }
-
                 }
             };
 
@@ -121,6 +115,10 @@ public class DatalinkLayer extends ProtocolLayer{
         {
             ark = true;
             recepteurArk = false;
+            System.out.println("transmission CONFIRMEE");
+            executor.shutdown();
+            ark = false;
+            setReadyForNextPacket(true);
             return;
         }
 

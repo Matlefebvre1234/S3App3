@@ -1,15 +1,13 @@
-import java.util.ArrayList;
-
 public abstract class ProtocolLayer {
 
     ProtocolLayer layerDessus;
     ProtocolLayer layerDessous;
-    Boolean acknowledge;
+    Boolean ReadyForNextPacket;
 
     Packet packet;
     public ProtocolLayer()
     {
-
+        ReadyForNextPacket =true;
     }
 
      public abstract void encapsulation(Packet packet);
@@ -36,11 +34,11 @@ public abstract class ProtocolLayer {
         layerDessous = layer;
     }
 
-    public Boolean getAcknowledge() {
-        return layerDessous.acknowledge;
+    public Boolean getReadyForNextPacket() {
+        return layerDessous.ReadyForNextPacket;
     }
 
-    public void setAcknowledge(Boolean ack){
-        acknowledge = ack;
+    public void setReadyForNextPacket(Boolean ack){
+        ReadyForNextPacket = ack;
     }
 }

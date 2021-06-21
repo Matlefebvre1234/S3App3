@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.lang.Integer;
-import java.math.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class TransportLayer extends ProtocolLayer{
 
@@ -16,7 +18,8 @@ public class TransportLayer extends ProtocolLayer{
     int portSource;
     int portDestination;
     Boolean ackDataLink;
-
+    ScheduledExecutorService executor;
+    int indexPacket;
     public TransportLayer(){
         ack = 0;
         seqByte = new byte[4];
@@ -29,6 +32,7 @@ public class TransportLayer extends ProtocolLayer{
         portSource = 25000;
         portDestination = 25001;
         ackDataLink = false;
+        indexPacket =0;
     }
 
     public ArrayList<Byte> encapsulationFragments(Packet packet, int nbFrag, double qteFrag) {
@@ -55,11 +59,6 @@ public class TransportLayer extends ProtocolLayer{
 
 
         packetSegment.addAll(packet.packet);
-
-        while(getAcknowledge() == false){
-        }
-
-        layerDessous.setAcknowledge(false);
 
         //Envoyer couche physique
         Packet envoyerPacket = new Packet();
@@ -101,16 +100,36 @@ public class TransportLayer extends ProtocolLayer{
 
         listPackets.add(temp);
 
-        encapsulationFragments(listPackets.get(0), 0, nbFragments);
+        double finalNbFragments = nbFragments;
+        Runnable envoyerPacket = new Runnable() {
+            public void run() {
+                if(layerDessous.getReadyForNextPacket())
+                {
+                    encapsulationFragments(listPackets.get(getIndexPacket()), getIndexPacket(), finalNbFragments);
+                    System.out.println("Packet: " + getIndexPacket());
+                    System.out.println("Nombre a envoyer: " + finalNbFragments);
+                    IncrementeIndexPacket();
+                    if(getIndexPacket()>= listPackets.size()) executor.shutdown();
+                }
 
+            }
+        };
 
+        executor = Executors.newScheduledThreadPool(1);
+        executor.scheduleAtFixedRate(envoyerPacket, 0, 100, TimeUnit.MILLISECONDS);
 
-        for(int i = 0; i < nbFragments; i++){
-            encapsulationFragments(listPackets.get(i), i, nbFragments);
-            System.out.println("Packet: " + i);
-            System.out.println("Nombre a envoyer: " + nbFragments);
-        }
     }
+
+    private int getIndexPacket()
+    {
+        return indexPacket;
+    }
+
+    private void IncrementeIndexPacket()
+    {
+        indexPacket++;
+    }
+
 
     @Override
     public void desencapsulation(Packet packet){
