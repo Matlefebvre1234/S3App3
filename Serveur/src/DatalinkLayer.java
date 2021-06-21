@@ -205,12 +205,9 @@ public class DatalinkLayer extends ProtocolLayer{
 
 
 
-<<<<<<< HEAD
-=======
-        System.out.println("Packet qui a ete checksum: "+sb);
+
        // System.out.println("donnees : " + data);
 
->>>>>>> master
     }
 
     public Boolean verifierChecksum(Packet packet){
@@ -326,7 +323,7 @@ public class DatalinkLayer extends ProtocolLayer{
             myWriter= new BufferedWriter(new FileWriter("liasonDeDonnes.log.txt", true));
             myWriter.write(message +  "  " +new java.util.Date());
             myWriter.close();
-            System.out.println(message);
+            System.out.println(message+"\n");
         } catch (IOException e) {
             System.out.println("Erreur");
             e.printStackTrace();
