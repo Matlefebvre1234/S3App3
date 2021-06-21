@@ -1,40 +1,36 @@
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.lang.Integer;
-import java.math.*;
 
 public class TransportLayer extends ProtocolLayer{
 
 
     int ack;
-    int limiteErreurs;
     byte[] ackByte;
     byte[] seqByte;
     ArrayList<Byte> packetTotal;
     int nombreFragments;
     ArrayList<Integer> fragmentsRecus;
-    Packet resendPacket;
     int portSource;
     int portDestination;
-    Boolean ackDataLink;
 
     public TransportLayer(){
-        ack = 0;
+        ack = 1;
         seqByte = new byte[4];
         ackByte = new byte[4];
         nombreFragments = 1;
         fragmentsRecus = new ArrayList<>();
         packetTotal = new ArrayList<>();
-        resendPacket = new Packet();
-        limiteErreurs = 0;
-        portSource = 25000;
-        portDestination = 25001;
-        ackDataLink = false;
+        portSource = 25001;
+        portDestination = 25000;
     }
 
     public ArrayList<Byte> encapsulationFragments(Packet packet, int nbFrag, double qteFrag) {
 
-        ArrayList<Byte> packetSegment = new ArrayList<Byte>();
-        String[] args = Client.getArgs();
+       /* ArrayList<Byte> packetSegment = new ArrayList<Byte>();
+        String[] args = QuoteServer.getArgs();
 
         byte[] nbFragByte;
         byte[] qteFragByte;
@@ -48,34 +44,26 @@ public class TransportLayer extends ProtocolLayer{
         packetSegment.addAll(packet.listToArray(convertIntToByteArray2(portSource)));
         packetSegment.addAll(packet.listToArray(convertIntToByteArray2(portDestination)));
 
+        packetSegment.addAll(packet.listToArray(seqByte));
         packetSegment.addAll(packet.listToArray(ackByte));
 
         packetSegment.addAll(packet.listToArray(nbFragByte));
         packetSegment.addAll(packet.listToArray(qteFragByte));
 
-
         packetSegment.addAll(packet.packet);
 
-        while(getAcknowledge() == false){
-        }
 
-        layerDessous.setAcknowledge(false);
+        Packet packetTest = new Packet();
+        packetTest.setPacket(packetSegment);
 
-        //Envoyer couche physique
-        Packet envoyerPacket = new Packet();
-        envoyerPacket.setPacket(packetSegment);
-
-        layerDessous.encapsulation(envoyerPacket);
-
-        resendPacket.setPacket(packet.packet);
-
+        desencapsulation(packetTest);*/
         return null;
     }
 
     @Override
     public void encapsulation(Packet packet) {
 
-        double nbFragments = 1;
+        /*double nbFragments = 1;
         ArrayList<Packet> listPackets = new ArrayList<>();
 
         if(packet.packet.size() > 200)
@@ -101,20 +89,15 @@ public class TransportLayer extends ProtocolLayer{
 
         listPackets.add(temp);
 
-        encapsulationFragments(listPackets.get(0), 0, nbFragments);
-
-
-
         for(int i = 0; i < nbFragments; i++){
             encapsulationFragments(listPackets.get(i), i, nbFragments);
-            System.out.println("Packet: " + i);
-            System.out.println("Nombre a envoyer: " + nbFragments);
-        }
+        }*/
     }
 
     @Override
-    public void desencapsulation(Packet packet){
-        System.out.println("Desencapsulation Client");
+    public void desencapsulation(Packet packet) {
+        Boolean OK;
+        int accuse;
         ArrayList<Byte> destination = new ArrayList<>();
         ArrayList<Byte> source = new ArrayList<>();
         ArrayList<Byte> ackRes = new ArrayList<>();
@@ -147,32 +130,109 @@ public class TransportLayer extends ProtocolLayer{
             data.add(packet.packet.get(i));
         }
 
-        if(convertByteArrayToInt2(packet.arrayToList(ackRes)) == 1)
-        {
-            System.out.println("continuer envoyer fragments");
-            ackDataLink = true;
+        int tempFrag = convertByteArrayToInt2(packet.arrayToList(nbFrag));
+        int tempqte = convertByteArrayToInt2(packet.arrayToList(qteFrag));
+
+        System.out.println("Numero: " + tempFrag);
+        System.out.println("Qte: " + qteFrag);
+
+        OK = desencapsulationFragments(data, tempFrag, tempqte);
+
+        //Creation accuse de reception positif
+        ArrayList<Byte> accuseReception = new ArrayList<Byte>();
+        accuseReception.addAll(source);
+        accuseReception.addAll(destination);
+
+        if(OK == true){
+
+            System.out.println("ca marche, retour");
+            accuse = 1;
+
+            //Envoyer data couche supérieur
+
+            /*Packet dataPourCoucheSuperieur = new Packet();
+            dataPourCoucheSuperieur.setPacket(data);
+            layerDessus.desencapsulation(dataPourCoucheSuperieur);*/
+
         }
 
         else{
-            System.out.println("Erreur, renvoyer ");
-            ackDataLink = false;
+            System.out.println("ca marche pas");
+            accuse = 0;
         }
 
-        if(convertByteArrayToInt2(packet.arrayToList(ackRes)) == 0){
-            limiteErreurs++;
+        ackByte = convertIntToByteArray2(accuse);
 
-            //À FAIRE DANS LA COUCHE APPLICATION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            if(limiteErreurs > 3) try {
-                throw new TransmissionErrorException();
-            } catch (TransmissionErrorException e) {
-                e.getMessage();
+        accuseReception.addAll(packet.listToArray(ackByte));
+        accuseReception.addAll(nbFrag);
+        accuseReception.addAll(qteFrag);
+        Packet arkEnvoi = new Packet();
+        arkEnvoi.setPacket(accuseReception);
+
+
+        //layerDessous.encapsulation(arkEnvoi);
+    }
+
+    public Boolean desencapsulationFragments(ArrayList<Byte> data, int nbFrag, int qteFrag) {
+
+        Boolean fragAnterieur = false;
+        Boolean fragUlterieur = false;
+
+
+        if(nombreFragments == 1){
+            nombreFragments = qteFrag;
+        }
+
+        else{
+            if(nombreFragments != qteFrag){
+                System.out.println("erreur fragments");
+                return false;
+            }
+        }
+
+        if(nbFrag >= qteFrag){
+            System.out.println("erreur fragment trop loin");
+            System.out.println(nbFrag);
+            return false;
+        }
+
+        for(int i = 0; i < fragmentsRecus.size(); i++){
+            if(fragmentsRecus.get(i) == nbFrag - 1){
+                fragAnterieur = true;
             }
 
-            else encapsulation(resendPacket);
+            if(fragmentsRecus.get(i) == nbFrag + 1){
+                fragUlterieur = true;
+            }
 
+            if(fragmentsRecus.get(i) == nbFrag){
+                System.out.println("Erreur duplication fragment");
+                return false;
+            }
         }
 
-    }
+        if(fragAnterieur == true && fragUlterieur == true){
+            System.out.println("Erreur ordre fragments");
+            return false;
+        }
+
+        //TODO: Faire l'ajout de données en ordre décroissant
+        fragmentsRecus.add(nbFrag);
+
+        packetTotal.addAll(data);
+
+
+        byte[] array = new byte[packetTotal.size()];
+        int i = 0;
+        for (Byte current : packetTotal) {
+            array[i] = current;
+            i++;
+        }
+
+        System.out.println(new String(array));
+
+        return true;
+    };
 
     public String convertByteToString(byte byteValue)
     {
@@ -182,6 +242,10 @@ public class TransportLayer extends ProtocolLayer{
         String stringValue = "" + byteValue;
 
         return (stringValue);
+    }
+
+    public ArrayList<Byte> getPacketTotal(){
+        return packetTotal;
     }
 
     public static int convertByteArrayToInt2(byte[] bytes) {
@@ -198,5 +262,6 @@ public class TransportLayer extends ProtocolLayer{
                 (byte)(value >> 8),
                 (byte)value };
     }
-}
 
+
+}

@@ -21,15 +21,15 @@ public class QuoteServerThread extends Thread {
 
     public void run() {
 
-        ApplicationLayer applicationLayer = new ApplicationLayer();
+        //ApplicationLayer applicationLayer = new ApplicationLayer();
+        TransportLayer transportLayer = new TransportLayer();
         PhysiqueLayer physique = new PhysiqueLayer();
         DatalinkLayer datalink = new DatalinkLayer();
 
-        applicationLayer.setLayerDessous(datalink);
-        datalink.setLayerDessus(applicationLayer);
+        transportLayer.setLayerDessous(datalink);
+        datalink.setLayerDessus(transportLayer);
         physique.setLayerDessus(datalink);
         datalink.setLayerDessous(physique);
-
 
          do
         {

@@ -33,6 +33,7 @@ public class PhysiqueLayer extends ProtocolLayer {
 
             }
             DatagramPacket message = new DatagramPacket(messageFinal,messageFinal.length, address, 25000);
+
             socket2.send(message);
 
             socket.setSoTimeout(2000);
@@ -69,7 +70,7 @@ public class PhysiqueLayer extends ProtocolLayer {
             nouveauPacket.setPacket(repCorrige);
             desencapsulation(nouveauPacket);
             String received = new String(packet.getData(), 0, packet.getLength());
-            System.out.println("Serveur:"+ received);
+            //System.out.println("Serveur:"+ received);
 
         }
         catch (IOException e) {
@@ -80,7 +81,7 @@ public class PhysiqueLayer extends ProtocolLayer {
     }
 
     @Override
-    public void desencapsulation(Packet message) {
+    public void desencapsulation(Packet message){
 
         //Reactiver quand le layerDessous (dataLinkLayer) sera configurer
         layerDessus.desencapsulation(message);

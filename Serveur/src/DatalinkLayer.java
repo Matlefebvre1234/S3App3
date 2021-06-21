@@ -205,6 +205,12 @@ public class DatalinkLayer extends ProtocolLayer{
 
 
 
+<<<<<<< HEAD
+=======
+        System.out.println("Packet qui a ete checksum: "+sb);
+       // System.out.println("donnees : " + data);
+
+>>>>>>> master
     }
 
     public Boolean verifierChecksum(Packet packet){
