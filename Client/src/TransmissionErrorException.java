@@ -1,2 +1,5 @@
-package PACKAGE_NAME;public class TransmissionErrorException {
+public class TransmissionErrorException extends Throwable {
+    public String getMessage(){
+        return "Trop d'erreurs de transmission, la connexion est perdue";
+    };
 }

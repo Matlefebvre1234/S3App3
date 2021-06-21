@@ -4,6 +4,7 @@ public abstract class ProtocolLayer {
 
     ProtocolLayer layerDessus;
     ProtocolLayer layerDessous;
+    Boolean acknowledge;
 
     Packet packet;
     public ProtocolLayer()
@@ -33,5 +34,13 @@ public abstract class ProtocolLayer {
     public void setLayerDessous(ProtocolLayer layer)
     {
         layerDessous = layer;
+    }
+
+    public Boolean getAcknowledge() {
+        return layerDessous.acknowledge;
+    }
+
+    public void setAcknowledge(Boolean ack){
+        acknowledge = ack;
     }
 }

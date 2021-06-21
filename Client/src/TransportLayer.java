@@ -5,80 +5,71 @@ import java.math.*;
 public class TransportLayer extends ProtocolLayer{
 
 
-    int seq = 1;
-    int ack = 0;
-    byte[] ackByte = new byte[4];
-    byte[] seqByte = new byte[4];
+    int ack;
+    int limiteErreurs;
+    byte[] ackByte;
+    byte[] seqByte;
+    ArrayList<Byte> packetTotal;
+    int nombreFragments;
+    ArrayList<Integer> fragmentsRecus;
+    Packet resendPacket;
+    int portSource;
+    int portDestination;
+    Boolean ackDataLink;
 
-    public String envoyerNomFichier() {
-        String nomFichier = "allo";
-        return nomFichier;
-    };
+    public TransportLayer(){
+        ack = 0;
+        seqByte = new byte[4];
+        ackByte = new byte[4];
+        nombreFragments = 1;
+        fragmentsRecus = new ArrayList<>();
+        packetTotal = new ArrayList<>();
+        resendPacket = new Packet();
+        limiteErreurs = 0;
+        portSource = 25000;
+        portDestination = 25001;
+        ackDataLink = false;
+    }
 
     public ArrayList<Byte> encapsulationFragments(Packet packet, int nbFrag, double qteFrag) {
 
-        ArrayList<Byte> packetFuckall = new ArrayList<Byte>();
         ArrayList<Byte> packetSegment = new ArrayList<Byte>();
         String[] args = Client.getArgs();
 
-        byte[] nbFragByte = new byte[4];
-        byte[] qteFragByte = new byte[4];
+        byte[] nbFragByte;
+        byte[] qteFragByte;
 
-        Byte portSource1 = (byte)0x61;
-        Byte portSource2 = (byte)0xa8;
-        Byte portDestination1 = (byte)0x61;
-        Byte portDestination2 = (byte)0xa9;
+        ackByte = convertIntToByteArray2(ack);
 
-        ack = packet.packet.size() + seq;
+        nbFragByte = convertIntToByteArray2(nbFrag);
 
-        ackByte[3] = (byte) ack;
-        ackByte[2] = (byte) (ack >>> 8);
-        ackByte[1] = (byte) (ack >>> 16);
-        ackByte[0] = (byte) (ack >>> 24);
+        qteFragByte = convertIntToByteArray2((int)qteFrag);
 
-        seqByte[3] = (byte) seq;
-        seqByte[2] = (byte) (seq >>> 8);
-        seqByte[1] = (byte) (seq >>> 16);
-        seqByte[0] = (byte) (seq >>> 24);
+        packetSegment.addAll(packet.listToArray(convertIntToByteArray2(portSource)));
+        packetSegment.addAll(packet.listToArray(convertIntToByteArray2(portDestination)));
 
-        nbFragByte[3] = (byte) nbFrag;
-        nbFragByte[2] = (byte) (nbFrag >>> 8);
-        nbFragByte[1] = (byte) (nbFrag >>> 16);
-        nbFragByte[0] = (byte) (nbFrag >>> 24);
-
-        qteFragByte[3] = (byte) qteFrag;
-        qteFragByte[2] = (byte) ((int)qteFrag >>> 8);
-        qteFragByte[1] = (byte) ((int)qteFrag >>> 16);
-        qteFragByte[0] = (byte) ((int)qteFrag >>> 24);
-
-        packetSegment.add(portSource1);
-        packetSegment.add(portSource2);
-
-        packetSegment.add(portDestination1);
-        packetSegment.add(portDestination2);
-
-        packetSegment.addAll(packet.listToArray(seqByte));
         packetSegment.addAll(packet.listToArray(ackByte));
 
         packetSegment.addAll(packet.listToArray(nbFragByte));
         packetSegment.addAll(packet.listToArray(qteFragByte));
 
-        packetFuckall.addAll(packet.listToArray(nbFragByte));
-        packetFuckall.addAll(packet.listToArray(qteFragByte));
-
 
         packetSegment.addAll(packet.packet);
 
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < packetFuckall.size(); i++) {
-            sb.append(String.format(
-                    "%02X%s", packetFuckall.get(i),
-                    (i < packetFuckall.size() - 1) ? " " : ""));
+        while(getAcknowledge() == false){
         }
 
-        System.out.println(sb);
+        layerDessous.setAcknowledge(false);
 
-        return packetFuckall;
+        //Envoyer couche physique
+        Packet envoyerPacket = new Packet();
+        envoyerPacket.setPacket(packetSegment);
+
+        layerDessous.encapsulation(envoyerPacket);
+
+        resendPacket.setPacket(packet.packet);
+
+        return null;
     }
 
     @Override
@@ -110,58 +101,39 @@ public class TransportLayer extends ProtocolLayer{
 
         listPackets.add(temp);
 
+        encapsulationFragments(listPackets.get(0), 0, nbFragments);
+
+
+
         for(int i = 0; i < nbFragments; i++){
             encapsulationFragments(listPackets.get(i), i, nbFragments);
+            System.out.println("Packet: " + i);
+            System.out.println("Nombre a envoyer: " + nbFragments);
         }
-        //StringBuilder sb = new StringBuilder();
-        //for (int i = 0; i < listPackets.get(0).packet.size(); i++) {
-        //    sb.append(String.format(
-        //            "%02X%s", listPackets.get(0).packet.get(i),
-        //            (i < listPackets.get(0).packet.size() - 1) ? " " : ""));
-        //}
-//
-        //StringBuilder sb2 = new StringBuilder();
-        //for (int i = 0; i < listPackets.get(1).packet.size(); i++) {
-        //    sb2.append(String.format(
-        //            "%02X%s", listPackets.get(1).packet.get(i),
-        //            (i < listPackets.get(1).packet.size() - 1) ? " " : ""));
-        //}
-//
-        //System.out.println(sb);
-        //System.out.println("Sale pute");
-        //System.out.println("alllo" + sb2);
     }
 
     @Override
-    public void desencapsulation(Packet packet) {
+    public void desencapsulation(Packet packet){
+        System.out.println("Desencapsulation Client");
         ArrayList<Byte> destination = new ArrayList<>();
         ArrayList<Byte> source = new ArrayList<>();
-        ArrayList<Byte> seqRes = new ArrayList<>();
         ArrayList<Byte> ackRes = new ArrayList<>();
         ArrayList<Byte> nbFrag = new ArrayList<>();
         ArrayList<Byte> qteFrag = new ArrayList<>();
+        ArrayList<Byte> data = new ArrayList<>();
 
-        for(int i = 0; i < 2; i++){
+
+        for(int i = 0; i < 4; i++){
             source.add(packet.packet.get(i));
         }
 
-        for(int i = 2; i < 4; i++){
-            destination.add(packet.packet.get(i));
-        }
-
-        System.out.println((short) ((source.get(0) << 8) | (source.get(1) & 0xFF)));
-        System.out.println((short) ((destination.get(0) << 8) | (destination.get(1) & 0xFF)));
-
         for(int i = 4; i < 8; i++){
-            seqRes.add(packet.packet.get(i));
+            destination.add(packet.packet.get(i));
         }
 
         for(int i = 8; i < 12; i++){
             ackRes.add(packet.packet.get(i));
         }
-
-        System.out.println(seqRes);
-        System.out.println(ackRes);
 
         for(int i = 12; i < 16; i++){
             nbFrag.add(packet.packet.get(i));
@@ -171,10 +143,60 @@ public class TransportLayer extends ProtocolLayer{
             qteFrag.add(packet.packet.get(i));
         }
 
-        System.out.println(nbFrag);
-        System.out.println(qteFrag);
+        for (int i = 20; i < packet.packet.size(); i++){
+            data.add(packet.packet.get(i));
+        }
+
+        if(convertByteArrayToInt2(packet.arrayToList(ackRes)) == 1)
+        {
+            System.out.println("continuer envoyer fragments");
+            ackDataLink = true;
+        }
+
+        else{
+            System.out.println("Erreur, renvoyer ");
+            ackDataLink = false;
+        }
+
+        if(convertByteArrayToInt2(packet.arrayToList(ackRes)) == 0){
+            limiteErreurs++;
+
+            //À FAIRE DANS LA COUCHE APPLICATION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            if(limiteErreurs > 3) try {
+                throw new TransmissionErrorException();
+            } catch (TransmissionErrorException e) {
+                e.getMessage();
+            }
+
+            else encapsulation(resendPacket);
+
+        }
 
     }
 
+    public String convertByteToString(byte byteValue)
+    {
 
+        // Convert byte value to String value
+        // using + operator method
+        String stringValue = "" + byteValue;
+
+        return (stringValue);
+    }
+
+    public static int convertByteArrayToInt2(byte[] bytes) {
+        return ((bytes[0] & 0xFF) << 24) |
+                ((bytes[1] & 0xFF) << 16) |
+                ((bytes[2] & 0xFF) << 8) |
+                ((bytes[3] & 0xFF) << 0);
+    }
+
+    public static byte[] convertIntToByteArray2(int value) {
+        return new byte[] {
+                (byte)(value >> 24),
+                (byte)(value >> 16),
+                (byte)(value >> 8),
+                (byte)value };
+    }
 }
+

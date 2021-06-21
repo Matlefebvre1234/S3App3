@@ -209,7 +209,7 @@ public class DatalinkLayer extends ProtocolLayer{
         }
 
 
-        System.out.println("tamere"+sb);
+        System.out.println("Packet qui a ete checksum: "+sb);
        // System.out.println("donnees : " + data);
 
     }

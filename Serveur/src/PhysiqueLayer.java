@@ -18,7 +18,6 @@ public class PhysiqueLayer extends ProtocolLayer {
         byte[] a = new byte[32];
         a[0] = 4;
         a[1] =5;
-        System.out.println(QuoteServer.getArgs());
         String[] args = QuoteServer.getArgs();
 
         try {

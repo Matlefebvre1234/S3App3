@@ -21,6 +21,7 @@ public class DatalinkLayer extends ProtocolLayer{
     {
         ark = false;
         recepteurArk = false;
+        setAcknowledge(true);
     }
 
     @Override
@@ -28,7 +29,6 @@ public class DatalinkLayer extends ProtocolLayer{
 
         ArrayList<Byte> packetFrame = new ArrayList<Byte>();
         String[] args = Client.getArgs();
-
 
         try{
             //trouver adresse mac
@@ -90,9 +90,10 @@ public class DatalinkLayer extends ProtocolLayer{
 
                     }
                     else {
-                        System.out.println("transmission CONFIRMER");
+                        System.out.println("transmission CONFIRMEE");
                         executor.shutdown();
                         ark = false;
+                        setAcknowledge(true);
                     }
 
                 }
@@ -176,7 +177,7 @@ public class DatalinkLayer extends ProtocolLayer{
         arkEnvoi.setPacket(accuseReception);
         layerDessous.encapsulation(arkEnvoi);
 
-        System.out.println("tamere"+sb);
+        System.out.println("Packet qui a ete checksum: "+sb);
        // System.out.println("donnees : " + data);
 
     }
