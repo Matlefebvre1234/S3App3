@@ -1,6 +1,4 @@
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -17,13 +15,26 @@ public class DatalinkLayer extends ProtocolLayer{
     boolean ark;
     boolean recepteurArk;
     int compteur;
+    int packetRecu;
+    int packetEnvoyer;
+    int packetErreur;
+    BufferedWriter myWriter;
     ScheduledExecutorService executor;
     public DatalinkLayer()
     {
         ark = false;
         recepteurArk = false;
         compteur = 0;
-    }
+        int packetRecu =0;
+        int packetEnvoyer =0;
+        int packetErreur =0;
+
+        try {
+             myWriter= new BufferedWriter(new FileWriter("liasonDeDonnes.log.txt", true));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+}
 
     @Override
     public void encapsulation(Packet packet) {
@@ -83,6 +94,7 @@ public class DatalinkLayer extends ProtocolLayer{
             Packet envoyerPacket = new Packet();
             envoyerPacket.setPacket(packetFrame);
             layerDessous.encapsulation(envoyerPacket);
+            packetEnvoyer++;
             recepteurArk = true;
             Runnable helloRunnable = new Runnable() {
                 public void run() {
@@ -103,23 +115,6 @@ public class DatalinkLayer extends ProtocolLayer{
             executor = Executors.newScheduledThreadPool(1);
             executor.scheduleAtFixedRate(helloRunnable, 0, 5, TimeUnit.SECONDS);
 
-
-
-            //affichage
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < packetFrame.size(); i++) {
-                sb.append(String.format(
-                        "%02X%s", packetFrame.get(i),
-                        (i < packetFrame.size() - 1) ? " " : ""));
-            }
-
-
-
-            // print the final String containing the MAC Address
-            System.out.println(sb.toString());
-
-
-
         }
         catch (UnknownHostException | SocketException e) {
             e.printStackTrace();
@@ -133,6 +128,8 @@ public class DatalinkLayer extends ProtocolLayer{
     @Override
     public void desencapsulation(Packet packet) {
 
+        packetRecu++;
+        sauvegarderLog("Packet recu");
         //vérififier si reponse Ark
         if(packet.packet.size() == 18 && recepteurArk)
         {
@@ -152,8 +149,10 @@ public class DatalinkLayer extends ProtocolLayer{
             compteur++;
         }
         else */checksum = verifierChecksum(packet);
-
-        if(!checksum) {return;}
+        if(!checksum) {packetErreur++;
+            sauvegarderLog("Erreur de CRC packet discarté");
+            return;}
+        sauvegarderLog("Packet avec CRC bon confirmé");
         //Adresses MAC
         ArrayList<Byte> destination = new ArrayList<Byte>();
         ArrayList<Byte> source = new ArrayList<Byte>();
@@ -190,6 +189,7 @@ public class DatalinkLayer extends ProtocolLayer{
             crc.add(packet.packet.get(i));
         }
 
+        System.out.println("adasdad");
         //Creation accuse de reception positif
         ArrayList<Byte> accuseReception = new ArrayList<Byte>();
         accuseReception.addAll(source);
@@ -198,19 +198,12 @@ public class DatalinkLayer extends ProtocolLayer{
         accuseReception.addAll(crc);
         Packet arkEnvoi = new Packet();
         arkEnvoi.setPacket(accuseReception);
+        System.out.println("aawd");
+        sauvegarderLog("Acusse de Reception Positif Envoye");
+        packetEnvoyer++;
         layerDessous.encapsulation(arkEnvoi);
 
-        StringBuilder sb = new StringBuilder();
 
-        for (int i = 0; i < packet.packet.size(); i++) {
-            sb.append(String.format(
-                    "%02X%s", packet.packet.get(i),
-                    (i < packet.packet.size() - 1) ? " " : ""));
-        }
-
-
-        System.out.println("tamere"+sb);
-       // System.out.println("donnees : " + data);
 
     }
 
@@ -264,6 +257,10 @@ public class DatalinkLayer extends ProtocolLayer{
 
     }
 
+    
+    
+
+    
     public Boolean verifierChecksumTruckee(Packet packet){
         ArrayList<Byte> checksumRecu = new ArrayList<Byte>();
 
@@ -315,6 +312,21 @@ public class DatalinkLayer extends ProtocolLayer{
         }
 
     }
+
+
+    public  void sauvegarderLog(String message)
+    {
+        try {
+            myWriter= new BufferedWriter(new FileWriter("liasonDeDonnes.log.txt", true));
+            myWriter.write(message +  "  " +new java.util.Date());
+            myWriter.close();
+            System.out.println(message);
+        } catch (IOException e) {
+            System.out.println("Erreur");
+            e.printStackTrace();
+        }
+    }
+
 
     private long getCRC32Checksum(byte[] bytes) {
         Checksum crc32 = new CRC32();

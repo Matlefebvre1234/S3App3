@@ -62,7 +62,7 @@ public class ApplicationLayer extends ProtocolLayer{
         byte[] nomFichier = packet.getByte();
         String nomFichierString  = new String(nomFichier,0,nomFichier.length-1);
         try {
-            myWriter = new FileWriter(nomFichierString);
+            myWriter = new FileWriter("nomFichierString");
         } catch (IOException e) {
             e.printStackTrace();
         }
