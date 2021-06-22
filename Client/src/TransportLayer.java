@@ -21,7 +21,7 @@ public class TransportLayer extends ProtocolLayer{
     Boolean ackDataLink;
     ScheduledExecutorService executor;
     int indexPacket;
-    Boolean testErreur;
+    int testErreur;
     int[] tableauErreur;
     public TransportLayer(){
         ack = 0;
@@ -44,7 +44,7 @@ public class TransportLayer extends ProtocolLayer{
         tableauErreur[1] = 3;
         tableauErreur[2] = 2;
         tableauErreur[3] = 1;
-        testErreur = false;
+        testErreur = 0;
 
     }
 
@@ -121,16 +121,21 @@ public class TransportLayer extends ProtocolLayer{
             public void run() {
                 if(layerDessous.getReadyForNextPacket() && packerVerifier)
                 {
-                    if(testErreur == false){
+                    if(testErreur == 0){
                         System.out.println(getIndexPacket());
                         encapsulationFragments(listPackets.get(getIndexPacket()), getIndexPacket(), finalNbFragments);
-                        //testErreur = true;
+                        //testErreur =1;
+                        //testErreur = 2;
                     }
 
-                    else {
+                    else if(testErreur == 1){
                         System.out.println(tableauErreur[getIndexPacket()]);
                         System.out.println(getIndexPacket());
                         encapsulationFragments(listPackets.get(getIndexPacket()), tableauErreur[getIndexPacket()], 4);
+                    }
+
+                    else{
+                        encapsulationFragments(listPackets.get(getIndexPacket()), 0, 4);
                     }
 
                     packerVerifier = false;
@@ -209,7 +214,7 @@ public class TransportLayer extends ProtocolLayer{
 
         else{
             limiteErreurs2++;
-            if(limiteErreurs2 < 3){
+            if(limiteErreurs2 < 4){
                 System.out.println("Erreur, renvoyer ");
                 packerVerifier =false;
                 ackDataLink = false;

@@ -90,4 +90,9 @@ public class PhysiqueLayer extends ProtocolLayer {
         //Reactiver quand le layerDessous (dataLinkLayer) sera configurer
         layerDessus.desencapsulation(message);
     }
+
+    @Override
+    public void resetLayerDessus() {
+
+    }
 }

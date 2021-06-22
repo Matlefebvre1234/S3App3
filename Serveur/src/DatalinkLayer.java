@@ -208,6 +208,11 @@ public class DatalinkLayer extends ProtocolLayer{
 
     }
 
+    @Override
+    public void resetLayerDessus() {
+
+    }
+
     public Boolean verifierChecksum(Packet packet){
         ArrayList<Byte> checksumRecu = new ArrayList<Byte>();
 
