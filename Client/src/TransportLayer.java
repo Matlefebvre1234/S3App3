@@ -4,6 +4,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * class transport layer
+ */
 public class TransportLayer extends ProtocolLayer{
 
     boolean packerVerifier;
@@ -48,6 +51,13 @@ public class TransportLayer extends ProtocolLayer{
 
     }
 
+    /**
+     * encapsule les donnes en fragements
+     * @param packet
+     * @param nbFrag
+     * @param qteFrag
+     * @return
+     */
     public ArrayList<Byte> encapsulationFragments(Packet packet, int nbFrag, double qteFrag) {
 
         ArrayList<Byte> packetSegment = new ArrayList<Byte>();
@@ -84,7 +94,10 @@ public class TransportLayer extends ProtocolLayer{
         return null;
     }
 
-
+    /**
+     * encapsule les donnes
+     * @param packet
+     */
     @Override
     public void encapsulation(Packet packet) {
 
@@ -157,17 +170,28 @@ public class TransportLayer extends ProtocolLayer{
 
     }
 
+    /**
+     * get index packet
+     * @return
+     */
     private int getIndexPacket()
     {
         return indexPacket;
     }
 
+    /**
+     * incremente index packet
+     */
     private void IncrementeIndexPacket()
     {
         indexPacket++;
     }
 
 
+    /**
+     * desencapsule les donnees
+     * @param packet
+     */
     @Override
     public void desencapsulation(Packet packet){
         System.out.println("Desencapsulation Client");
@@ -232,6 +256,11 @@ public class TransportLayer extends ProtocolLayer{
         }
     }
 
+    /**
+     * convertie un byte en string
+     * @param byteValue
+     * @return
+     */
     public String convertByteToString(byte byteValue)
     {
 
@@ -242,6 +271,11 @@ public class TransportLayer extends ProtocolLayer{
         return (stringValue);
     }
 
+    /**
+     * convertie array en int
+     * @param bytes
+     * @return
+     */
     public static int convertByteArrayToInt2(byte[] bytes) {
         return ((bytes[0] & 0xFF) << 24) |
                 ((bytes[1] & 0xFF) << 16) |
@@ -249,6 +283,11 @@ public class TransportLayer extends ProtocolLayer{
                 ((bytes[3] & 0xFF) << 0);
     }
 
+    /**
+     * convertie int en byte
+     * @param value
+     * @return
+     */
     public static byte[] convertIntToByteArray2(int value) {
         return new byte[] {
                 (byte)(value >> 24),

@@ -1,5 +1,8 @@
 import java.net.SocketTimeoutException;
 
+/**
+ * CommunicationMaison
+ */
 public class CommunicationMaison extends Communication{
 
     ApplicationLayer applicationLayer;
@@ -12,6 +15,9 @@ public class CommunicationMaison extends Communication{
         InitialiserLayer();
     }
 
+    /**
+     * initialise les layers
+     */
     @Override
     public void InitialiserLayer() {
 
@@ -28,11 +34,18 @@ public class CommunicationMaison extends Communication{
         physiqueLayer.setLayerDessus(datalinkLayer);
     }
 
+    /**
+     * start ls communication
+     * @param nomFichier
+     */
     @Override
     public void start(String nomFichier) {
         applicationLayer.envoyerFichierServeur(nomFichier);
     }
 
+    /**
+     * attend les messages
+     */
     @Override
     public void RecevoirStart() {
         physiqueLayer.recevoirMessage();

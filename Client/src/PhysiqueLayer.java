@@ -2,6 +2,9 @@ import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
 
+/**
+ * physique layer class
+ */
 public class PhysiqueLayer extends ProtocolLayer {
 
      DatagramSocket socket;
@@ -13,6 +16,10 @@ public class PhysiqueLayer extends ProtocolLayer {
         }
     }
 
+    /**
+     * encapsule les données
+     * @param packet
+     */
     @Override
     public void encapsulation(Packet packet) {
         byte[] a = new byte[32];
@@ -55,6 +62,10 @@ public class PhysiqueLayer extends ProtocolLayer {
 
     }
 
+    /**
+     * reccevoir des message par le socket
+     * @throws SocketTimeoutException
+     */
     public void recevoirMessage() throws SocketTimeoutException
     {
         try {
@@ -82,6 +93,10 @@ public class PhysiqueLayer extends ProtocolLayer {
 
     }
 
+    /**
+     * desencapsule les donnees
+     * @param message
+     */
     @Override
     public void desencapsulation(Packet message){
 

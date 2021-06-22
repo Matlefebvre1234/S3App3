@@ -4,6 +4,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Classe Application layer
+ */
 public class ApplicationLayer extends ProtocolLayer{
 
     FileWriter myWriter;
@@ -19,8 +22,10 @@ public class ApplicationLayer extends ProtocolLayer{
 
     }
 
-
-
+    /**
+     * envoyer un fichier au serveur
+     * @param nomFichier
+     */
     public void envoyerFichierServeur(String nomFichier)
     {
 
@@ -50,16 +55,27 @@ public class ApplicationLayer extends ProtocolLayer{
         executorapp.scheduleAtFixedRate(envoyerPacket2, 0, 200, TimeUnit.MILLISECONDS);
     };
 
+    /**
+     *
+     * @return indexPAcket
+     */
     private int getIndexPacket()
     {
         return indexPacket;
     }
 
+    /**
+     * incrementeIndexPAcket
+     */
     private void IncrementeIndexPacket()
     {
         indexPacket++;
     }
 
+    /**
+     * sauvegarde packet en fichier
+     * @param packet
+     */
     public  void sauvegarderPacketFichier(Packet packet)
     {
         try {
@@ -73,6 +89,11 @@ public class ApplicationLayer extends ProtocolLayer{
             e.printStackTrace();
         }
     }
+
+    /**
+     * Creer un fichuier
+     * @param packet
+     */
     private void creerFichier(Packet packet)
     {
         byte[] nomFichier = packet.getByte();
@@ -92,11 +113,19 @@ public class ApplicationLayer extends ProtocolLayer{
 
     }
 
+    /**
+     * encapsule les data
+     * @param nomFichier
+     */
     public void encapsulation(String nomFichier) {
         envoyerFichierServeur(nomFichier);
 
     }
 
+    /**
+     * desencapsule les data
+     * @param packet
+     */
     @Override
     public void desencapsulation(Packet packet) {
 
@@ -108,6 +137,11 @@ public class ApplicationLayer extends ProtocolLayer{
 
     }
 
+    /**
+     * lit un fichier
+     * @param nomFichier
+     * @return
+     */
     private StringBuffer lireFichier(String nomFichier)
     {
         try

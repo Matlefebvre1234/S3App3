@@ -1,3 +1,6 @@
+/**
+ * Factory communication MAison
+ */
 public class FactoryCommunicationMaison implements FactoryCommunication{
     @Override
     public Communication creerCommunication() {

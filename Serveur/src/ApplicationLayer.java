@@ -1,6 +1,9 @@
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * classe application layer
+ */
 public class ApplicationLayer extends ProtocolLayer{
 
     FileWriter myWriter;
@@ -11,7 +14,10 @@ public class ApplicationLayer extends ProtocolLayer{
     }
 
 
-
+    /**
+     * envoyer un fichier au serveur
+     * @param nomFichier
+     */
     public void envoyerFichierServeur(String nomFichier)
     {
         byte[] fichierenByte = lireFichier(nomFichier).toString().getBytes();
@@ -21,6 +27,10 @@ public class ApplicationLayer extends ProtocolLayer{
     };
 
 
+    /**
+     * sauvegarder packet en fichier
+     * @param packet
+     */
     public  void sauvegarderPacketFichier(Packet packet)
     {
         try {
@@ -36,6 +46,10 @@ public class ApplicationLayer extends ProtocolLayer{
         }
     }
 
+    /**
+     * encapsule les donnees
+     * @param packet
+     */
     @Override
     public void encapsulation(Packet packet) {
 
@@ -43,11 +57,19 @@ public class ApplicationLayer extends ProtocolLayer{
 
     }
 
+    /**
+     * encapsule les donnees
+     * @param nomFichier
+     */
     public void encapsulation(String nomFichier) {
         envoyerFichierServeur(nomFichier);
 
     }
 
+    /**
+     * desencapsule les donnees
+     * @param packet
+     */
     @Override
     public void desencapsulation(Packet packet) {
 
@@ -56,12 +78,18 @@ public class ApplicationLayer extends ProtocolLayer{
         else if (nomRecu) sauvegarderPacketFichier(packet);
     }
 
+    /**
+     * reset le layer du dessus
+     */
     @Override
     public void resetLayerDessus() {
         nomRecu = false;
     }
 
-
+    /**
+     * creer un fichier
+     * @param packet
+     */
     private void creerFichier(Packet packet)
     {
 
@@ -77,6 +105,11 @@ public class ApplicationLayer extends ProtocolLayer{
 
     }
 
+    /**
+     * lit un fichier en memoire
+     * @param nomFichier
+     * @return
+     */
     private StringBuffer lireFichier(String nomFichier)
     {
         try

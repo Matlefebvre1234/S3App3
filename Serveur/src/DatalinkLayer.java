@@ -10,6 +10,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
 
+/**
+ * datalink class
+ */
 public class DatalinkLayer extends ProtocolLayer{
 
     boolean ark;
@@ -37,6 +40,10 @@ public class DatalinkLayer extends ProtocolLayer{
         }
 }
 
+    /**
+     * encapsule les donnees
+     * @param packet
+     */
     @Override
     public void encapsulation(Packet packet) {
 
@@ -121,6 +128,10 @@ public class DatalinkLayer extends ProtocolLayer{
 
     }
 
+    /**
+     * desencapsule les donnees
+     * @param packet
+     */
     @Override
     public void desencapsulation(Packet packet) {
 
@@ -208,6 +219,9 @@ public class DatalinkLayer extends ProtocolLayer{
 
     }
 
+    /**
+     * reset le layer du dessus
+     */
     @Override
     public void resetLayerDessus() {
 
@@ -263,10 +277,12 @@ public class DatalinkLayer extends ProtocolLayer{
 
     }
 
-    
-    
 
-    
+    /**
+     * checksum trucker
+     * @param packet
+     * @return
+     */
     public Boolean verifierChecksumTruckee(Packet packet){
         ArrayList<Byte> checksumRecu = new ArrayList<Byte>();
 
@@ -320,6 +336,10 @@ public class DatalinkLayer extends ProtocolLayer{
     }
 
 
+    /**
+     * sauvegarde transmission dans log
+     * @param message
+     */
     public  void sauvegarderLog(String message)
     {
         try {
@@ -334,12 +354,23 @@ public class DatalinkLayer extends ProtocolLayer{
     }
 
 
+    /**
+     * get CRC
+     * @param bytes
+     * @return
+     */
     private long getCRC32Checksum(byte[] bytes) {
         Checksum crc32 = new CRC32();
         crc32.update(bytes, 0, bytes.length);
         return crc32.getValue();
     }
 
+    /**
+     * long to byte array
+     * @param i
+     * @return
+     * @throws IOException
+     */
     private byte[] longToByteArray ( final long i ) throws IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(bos);

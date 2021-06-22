@@ -4,6 +4,9 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
+/**
+ * transport layer class
+ */
 public class TransportLayer extends ProtocolLayer{
 
 
@@ -37,6 +40,13 @@ public class TransportLayer extends ProtocolLayer{
         compteurErreurs = 0;
     }
 
+    /**
+     * encapsule les donnees en fragement
+     * @param packet
+     * @param nbFrag
+     * @param qteFrag
+     * @return
+     */
     public ArrayList<Byte> encapsulationFragments(Packet packet, int nbFrag, double qteFrag) {
 
        /* ArrayList<Byte> packetSegment = new ArrayList<Byte>();
@@ -70,6 +80,10 @@ public class TransportLayer extends ProtocolLayer{
         return null;
     }
 
+    /**
+     * encapsule les donnees
+     * @param packet
+     */
     @Override
     public void encapsulation(Packet packet) {
 
@@ -104,6 +118,10 @@ public class TransportLayer extends ProtocolLayer{
         }*/
     }
 
+    /**
+     * desencapsule les donnees
+     * @param packet
+     */
     @Override
     public void desencapsulation(Packet packet) {
         Boolean OK;
@@ -197,11 +215,21 @@ public class TransportLayer extends ProtocolLayer{
 
     }
 
+    /**
+     * reset le layer du dessus
+     */
     @Override
     public void resetLayerDessus() {
 
     }
 
+    /**
+     * desencapusle les donnees en fragments
+     * @param data
+     * @param nbFrag
+     * @param qteFrag
+     * @return
+     */
     public Boolean desencapsulationFragments(ArrayList<Byte> data, int nbFrag, int qteFrag) {
 
         Boolean fragAnterieur = false;
@@ -299,6 +327,11 @@ public class TransportLayer extends ProtocolLayer{
         return true;
     };
 
+    /**
+     * convertie des byte en string
+     * @param byteValue
+     * @return
+     */
     public String convertByteToString(byte byteValue)
     {
 
@@ -309,10 +342,19 @@ public class TransportLayer extends ProtocolLayer{
         return (stringValue);
     }
 
+    /**
+     * get le packet total
+     * @return
+     */
     public ArrayList<Byte> getPacketTotal(){
         return packetTotal;
     }
 
+    /**
+     * convertie un array en int
+     * @param bytes
+     * @return
+     */
     public static int convertByteArrayToInt2(byte[] bytes) {
         return ((bytes[0] & 0xFF) << 24) |
                 ((bytes[1] & 0xFF) << 16) |
@@ -320,6 +362,11 @@ public class TransportLayer extends ProtocolLayer{
                 ((bytes[3] & 0xFF) << 0);
     }
 
+    /**
+     * convertie des byte en array
+     * @param value
+     * @return
+     */
     public static byte[] convertIntToByteArray2(int value) {
         return new byte[] {
                 (byte)(value >> 24),

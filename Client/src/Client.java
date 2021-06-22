@@ -8,7 +8,11 @@ public class Client {
         return savedArgs;
     }
 
-
+    /**
+     * main
+     * @param args
+     * @throws IOException
+     */
     public static void main( String[] args) throws IOException {
         savedArgs = args;
         if (args.length != 2) {

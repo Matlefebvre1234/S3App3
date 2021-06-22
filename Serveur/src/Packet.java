@@ -1,6 +1,9 @@
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
+/**
+ * Packet class
+ */
 public class Packet {
 
     ArrayList<Byte> packet;
@@ -20,6 +23,10 @@ public class Packet {
         packet = array;
     }
 
+    /**
+     * set le packet
+     * @param array
+     */
     public void setPacket(byte[] array)
     {
         packet = new ArrayList<Byte>();
@@ -29,6 +36,11 @@ public class Packet {
         }
     }
 
+    /**
+     * transforme list en array
+     * @param list
+     * @return
+     */
     public ArrayList<Byte> listToArray(byte[] list) {
         ArrayList<Byte> array = new ArrayList<Byte>();
 
@@ -40,6 +52,11 @@ public class Packet {
         return array;
     }
 
+    /**
+     * transforme array en liste
+     * @param array
+     * @return
+     */
     public  byte[] arrayToList(ArrayList<Byte> array) {
 
         byte[] list = new byte[array.size()];
@@ -53,7 +70,12 @@ public class Packet {
     }
 
 
-
+    /**
+     * getByte
+     * @param debut
+     * @param fin
+     * @return
+     */
     public byte[] getByte(int debut,int fin)
     {
         if(debut != fin)
@@ -71,7 +93,10 @@ public class Packet {
 
     }
 
-
+    /**
+     * retourne les bytes
+     * @return
+     */
     public byte[] getByte()
     {
 
@@ -85,7 +110,10 @@ public class Packet {
 
     }
 
-
+    /**
+     * affiche un packet en console
+     * @param packet
+     */
     public void afficherPacket(Packet packet)
     {
         StringBuilder sb = new StringBuilder();
@@ -96,6 +124,10 @@ public class Packet {
         }
     }
 
+    /**
+     * affiche un array list en console
+     * @param packet
+     */
     public static void afficherPacket(ArrayList<Byte> packet)
     {
         StringBuilder sb = new StringBuilder();
@@ -107,6 +139,10 @@ public class Packet {
         System.out.println(sb.toString());
     }
 
+    /**
+     * affiche un array en packet
+     * @param arraybyte
+     */
     public static void afficherPacket(byte[] arraybyte)
     {
         StringBuilder sb = new StringBuilder();
