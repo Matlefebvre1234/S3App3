@@ -19,6 +19,7 @@ public class TransportLayer extends ProtocolLayer{
     int indexListePackets;
     int[] ordrePackets;
     Boolean erreur;
+    int compteurErreurs;
 
     public TransportLayer(){
         ack = 1;
@@ -33,6 +34,7 @@ public class TransportLayer extends ProtocolLayer{
         indexListePackets = 0;
         ordrePackets = new int[256];
         erreur = false;
+        compteurErreurs = 0;
     }
 
     public ArrayList<Byte> encapsulationFragments(Packet packet, int nbFrag, double qteFrag) {
@@ -145,6 +147,21 @@ public class TransportLayer extends ProtocolLayer{
 
         OK = desencapsulationFragments(data, tempFrag, tempqte);
 
+        if(compteurErreurs > 3){
+            try {
+                fragmentsRecus.clear();
+                nombreFragments = 1;
+                packetTotal.clear();
+                indexListePackets = 0;
+                compteurErreurs = 0;
+                layerDessus.resetLayerDessus();
+                throw new TransmissionErrorException();
+            } catch (TransmissionErrorException e) {
+                System.out.println(e.getMessage());
+                return;
+            }
+        }
+
         //Creation accuse de reception positif
         ArrayList<Byte> accuseReception = new ArrayList<Byte>();
         accuseReception.addAll(source);
@@ -180,6 +197,11 @@ public class TransportLayer extends ProtocolLayer{
 
     }
 
+    @Override
+    public void resetLayerDessus() {
+
+    }
+
     public Boolean desencapsulationFragments(ArrayList<Byte> data, int nbFrag, int qteFrag) {
 
         Boolean fragAnterieur = false;
@@ -193,6 +215,7 @@ public class TransportLayer extends ProtocolLayer{
         else{
             if(nombreFragments != qteFrag){
                 System.out.println("erreur fragments");
+                compteurErreurs++;
                 return false;
             }
         }
@@ -200,6 +223,7 @@ public class TransportLayer extends ProtocolLayer{
         if(nbFrag >= qteFrag){
             System.out.println("erreur fragment trop loin");
             System.out.println(nbFrag);
+            compteurErreurs++;
             return false;
         }
 
@@ -214,12 +238,14 @@ public class TransportLayer extends ProtocolLayer{
 
             if(fragmentsRecus.get(i) == nbFrag){
                 System.out.println("Erreur duplication fragment");
+                compteurErreurs++;
                 return false;
             }
         }
 
         if(fragAnterieur == true && fragUlterieur == true && erreur == false){
             System.out.println("Erreur ordre fragments");
+            compteurErreurs++;
             erreur = true;
             return false;
         }
@@ -259,11 +285,12 @@ public class TransportLayer extends ProtocolLayer{
 
             Packet packetFinal = new Packet();
             packetFinal.setPacket(array);
-            layerDessus.desencapsulation(packetFinal);
             packet.afficherPacket(array);
             fragmentsRecus.clear();
+            nombreFragments = 1;
             packetTotal.clear();
             indexListePackets = 0;
+            layerDessus.desencapsulation(packetFinal);
         }
 
 

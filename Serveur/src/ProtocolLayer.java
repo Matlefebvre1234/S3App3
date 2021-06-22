@@ -16,6 +16,8 @@ public abstract class ProtocolLayer {
 
     public abstract void desencapsulation(Packet packet);
 
+    public abstract void resetLayerDessus();
+
 
     public ProtocolLayer getLayerDessus()
     {

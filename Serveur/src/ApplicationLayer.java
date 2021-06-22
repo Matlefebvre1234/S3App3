@@ -28,6 +28,7 @@ public class ApplicationLayer extends ProtocolLayer{
             byte[] message = packet.getByte();
             myWriter.write(new String(message),0,message.length);
             myWriter.close();
+            nomRecu = false;
             System.out.println("Fichier Sauvegarder Avec succes");
         } catch (IOException e) {
             System.out.println("Erreur");
@@ -55,6 +56,10 @@ public class ApplicationLayer extends ProtocolLayer{
         else if (nomRecu) sauvegarderPacketFichier(packet);
     }
 
+    @Override
+    public void resetLayerDessus() {
+        nomRecu = false;
+    }
 
 
     private void creerFichier(Packet packet)
