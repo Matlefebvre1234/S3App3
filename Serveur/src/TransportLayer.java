@@ -15,6 +15,10 @@ public class TransportLayer extends ProtocolLayer{
     ArrayList<Integer> fragmentsRecus;
     int portSource;
     int portDestination;
+    Packet[] listePackets;
+    int indexListePackets;
+    int[] ordrePackets;
+    Boolean erreur;
 
     public TransportLayer(){
         ack = 1;
@@ -25,6 +29,10 @@ public class TransportLayer extends ProtocolLayer{
         packetTotal = new ArrayList<>();
         portSource = 25001;
         portDestination = 25000;
+        listePackets = new Packet[256];
+        indexListePackets = 0;
+        ordrePackets = new int[256];
+        erreur = false;
     }
 
     public ArrayList<Byte> encapsulationFragments(Packet packet, int nbFrag, double qteFrag) {
@@ -210,34 +218,52 @@ public class TransportLayer extends ProtocolLayer{
             }
         }
 
-        if(fragAnterieur == true && fragUlterieur == true){
+        if(fragAnterieur == true && fragUlterieur == true && erreur == false){
             System.out.println("Erreur ordre fragments");
+            erreur = true;
             return false;
         }
 
         //TODO: Faire l'ajout de données en ordre décroissant
         fragmentsRecus.add(nbFrag);
 
-        packetTotal.addAll(data);
+        Packet temp = new Packet();
+        temp.setPacket(data);
 
+        listePackets[indexListePackets] = temp;
+        ordrePackets[indexListePackets] = nbFrag;
 
-        byte[] array = new byte[packetTotal.size()];
-        int i = 0;
-        for (Byte current : packetTotal) {
-            array[i] = current;
-            i++;
-        }
+        indexListePackets++;
 
         //MAT Envoyer couche application
 
         if(fragmentsRecus.size() == qteFrag)
         {
+            for(int i = 0; i < indexListePackets; i++){
+                for(int y = 0; y < indexListePackets; y++){
+                    if(ordrePackets[y] == i){
+                        System.out.println("Numero ajout: " + i);
+                        System.out.println("Celui ajoute: " + y);
+                        packetTotal.addAll(listePackets[y].getPacket());
+                    }
+                }
+            }
+
+
+            byte[] array = new byte[packetTotal.size()];
+            int i = 0;
+            for (Byte current : packetTotal) {
+                array[i] = current;
+                i++;
+            }
+
             Packet packetFinal = new Packet();
             packetFinal.setPacket(array);
             layerDessus.desencapsulation(packetFinal);
             packet.afficherPacket(array);
             fragmentsRecus.clear();
             packetTotal.clear();
+            indexListePackets = 0;
         }
 
 

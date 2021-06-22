@@ -9,6 +9,7 @@ public class TransportLayer extends ProtocolLayer{
     boolean packerVerifier;
     int ack;
     int limiteErreurs;
+    int limiteErreurs2;
     byte[] ackByte;
     byte[] seqByte;
     ArrayList<Byte> packetTotal;
@@ -20,6 +21,8 @@ public class TransportLayer extends ProtocolLayer{
     Boolean ackDataLink;
     ScheduledExecutorService executor;
     int indexPacket;
+    Boolean testErreur;
+    int[] tableauErreur;
     public TransportLayer(){
         ack = 0;
         seqByte = new byte[4];
@@ -29,12 +32,19 @@ public class TransportLayer extends ProtocolLayer{
         packetTotal = new ArrayList<>();
         resendPacket = new Packet();
         limiteErreurs = 0;
+        limiteErreurs2 = 0;
         portSource = 25000;
         portDestination = 25001;
         ackDataLink = false;
         indexPacket =0;
         packerVerifier = true;
         setReadyForNextPacket(true);
+        tableauErreur = new int[4];
+        tableauErreur[0] = 0;
+        tableauErreur[1] = 3;
+        tableauErreur[2] = 2;
+        tableauErreur[3] = 1;
+        testErreur = false;
 
     }
 
@@ -70,10 +80,11 @@ public class TransportLayer extends ProtocolLayer{
 
         layerDessous.encapsulation(envoyerPacket);
 
-        resendPacket.setPacket(packet.packet);
+        resendPacket.setPacket(packetSegment);
 
         return null;
     }
+
 
     @Override
     public void encapsulation(Packet packet) {
@@ -110,8 +121,18 @@ public class TransportLayer extends ProtocolLayer{
             public void run() {
                 if(layerDessous.getReadyForNextPacket() && packerVerifier)
                 {
+                    if(testErreur == false){
+                        System.out.println(getIndexPacket());
+                        encapsulationFragments(listPackets.get(getIndexPacket()), getIndexPacket(), finalNbFragments);
+                        //testErreur = true;
+                    }
 
-                    encapsulationFragments(listPackets.get(getIndexPacket()), getIndexPacket(), finalNbFragments);
+                    else {
+                        System.out.println(tableauErreur[getIndexPacket()]);
+                        System.out.println(getIndexPacket());
+                        encapsulationFragments(listPackets.get(getIndexPacket()), tableauErreur[getIndexPacket()], 4);
+                    }
+
                     packerVerifier = false;
                     setReadyForNextPacket(false);
                     System.out.println("Packet: " + getIndexPacket());
@@ -187,27 +208,24 @@ public class TransportLayer extends ProtocolLayer{
         }
 
         else{
-            System.out.println("Erreur, renvoyer ");
-            packerVerifier =false;
-            ackDataLink = false;
-            setReadyForNextPacket(false);
+            limiteErreurs2++;
+            if(limiteErreurs2 < 3){
+                System.out.println("Erreur, renvoyer ");
+                packerVerifier =false;
+                ackDataLink = false;
+                setReadyForNextPacket(false);
 
-        }
-
-        if(convertByteArrayToInt2(packet.arrayToList(ackRes)) == 0){
-            limiteErreurs++;
-
-            //À FAIRE DANS LA COUCHE APPLICATION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            if(limiteErreurs > 3) try {
-                throw new TransmissionErrorException();
-            } catch (TransmissionErrorException e) {
-                e.getMessage();
+                layerDessous.encapsulation(resendPacket);
             }
 
-            else encapsulation(resendPacket);
-
+            else {
+                    try {
+                        throw new TransmissionErrorException();
+                    } catch (TransmissionErrorException e) {
+                        System.out.println(e.getMessage());
+                    }
+            }
         }
-
     }
 
     public String convertByteToString(byte byteValue)
