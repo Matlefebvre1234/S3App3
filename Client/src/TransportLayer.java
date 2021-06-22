@@ -80,7 +80,6 @@ public class TransportLayer extends ProtocolLayer{
 
         setReadyForNextPacket(false);
         double nbFragments = 1;
-
         ArrayList<Packet> listPackets = new ArrayList<>();
 
         if(packet.packet.size() > 200)

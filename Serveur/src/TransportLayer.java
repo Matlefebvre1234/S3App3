@@ -236,6 +236,8 @@ public class TransportLayer extends ProtocolLayer{
             packetFinal.setPacket(array);
             layerDessus.desencapsulation(packetFinal);
             packet.afficherPacket(array);
+            fragmentsRecus.clear();
+            packetTotal.clear();
         }
 
 

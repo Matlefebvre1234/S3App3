@@ -43,7 +43,6 @@ public class Client {
 
 
 
-        //application.encapsulation("mathieu.txt");
 
 
 

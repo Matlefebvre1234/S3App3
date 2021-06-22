@@ -26,8 +26,7 @@ public class ApplicationLayer extends ProtocolLayer{
         try {
 
             byte[] message = packet.getByte();
-            System.out.println(packet.packet.get(0));
-            myWriter.write(new String(message),0,message.length-1);
+            myWriter.write(new String(message),0,message.length);
             myWriter.close();
             System.out.println("Fichier Sauvegarder Avec succes");
         } catch (IOException e) {
@@ -51,21 +50,22 @@ public class ApplicationLayer extends ProtocolLayer{
     @Override
     public void desencapsulation(Packet packet) {
 
-        System.out.println("RECU APPLICATION");
+
         if (!nomRecu)creerFichier(packet);
-        if (nomRecu) sauvegarderPacketFichier(packet);
+        else if (nomRecu) sauvegarderPacketFichier(packet);
     }
 
 
 
     private void creerFichier(Packet packet)
     {
-        System.out.println("Fichier creer");
+
         byte[] nomFichier = packet.getByte();
        String nomFichierString  = new String(nomFichier,0,nomFichier.length);
-        System.out.println(nomFichierString);
         try {
             myWriter = new FileWriter(nomFichierString);
+            nomRecu = true;
+            System.out.println("Fichier "+nomFichierString+" En modification");
         } catch (IOException e) {
             e.printStackTrace();
         }
