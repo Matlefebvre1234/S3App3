@@ -79,7 +79,6 @@ public class TransportLayer extends ProtocolLayer{
 
 
         layerDessous.encapsulation(envoyerPacket);
-
         resendPacket.setPacket(packetSegment);
 
         return null;

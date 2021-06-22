@@ -143,7 +143,7 @@ public class DatalinkLayer extends ProtocolLayer{
         //Verifier checksum
         Boolean checksum = false;
         /////////////VALIDATION/////////////
-       /* if(compteur<2)
+        /*if(compteur<2)
         {
             checksum = verifierChecksumTruckee(packet);
             compteur++;

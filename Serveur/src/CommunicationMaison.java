@@ -35,10 +35,6 @@ public class CommunicationMaison extends Communication{
 
     @Override
     public void RecevoirStart() {
-        try {
-            physiqueLayer.recevoirMessage();
-        } catch (SocketTimeoutException e) {
-            e.printStackTrace();
-        }
+        physiqueLayer.recevoirMessage();
     }
 }

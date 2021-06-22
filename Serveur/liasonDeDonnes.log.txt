@@ -3711,3 +3711,52 @@ Acusse de Reception Positif Envoye  Tue Jun 22 09:24:48 EDT 2021
 Packet recu  Tue Jun 22 09:24:48 EDT 2021
 Packet avec CRC bon confirmé  Tue Jun 22 09:24:48 EDT 2021
 Acusse de Reception Positif Envoye  Tue Jun 22 09:24:48 EDT 2021
+Packet recu  Tue Jun 22 09:33:31 EDT 2021
+Erreur de CRC packet discarté  Tue Jun 22 09:33:31 EDT 2021
+Packet recu  Tue Jun 22 09:33:37 EDT 2021
+Erreur de CRC packet discarté  Tue Jun 22 09:33:37 EDT 2021
+Packet recu  Tue Jun 22 09:33:43 EDT 2021
+Packet avec CRC bon confirmé  Tue Jun 22 09:33:43 EDT 2021
+Acusse de Reception Positif Envoye  Tue Jun 22 09:33:43 EDT 2021
+Packet recu  Tue Jun 22 09:33:44 EDT 2021
+Packet avec CRC bon confirmé  Tue Jun 22 09:33:44 EDT 2021
+Acusse de Reception Positif Envoye  Tue Jun 22 09:33:44 EDT 2021
+Packet recu  Tue Jun 22 09:33:44 EDT 2021
+Packet avec CRC bon confirmé  Tue Jun 22 09:33:44 EDT 2021
+Acusse de Reception Positif Envoye  Tue Jun 22 09:33:44 EDT 2021
+Packet recu  Tue Jun 22 09:33:44 EDT 2021
+Packet avec CRC bon confirmé  Tue Jun 22 09:33:44 EDT 2021
+Acusse de Reception Positif Envoye  Tue Jun 22 09:33:44 EDT 2021
+Packet recu  Tue Jun 22 09:33:44 EDT 2021
+Packet avec CRC bon confirmé  Tue Jun 22 09:33:44 EDT 2021
+Acusse de Reception Positif Envoye  Tue Jun 22 09:33:44 EDT 2021
+Packet recu  Tue Jun 22 10:09:31 EDT 2021
+Packet avec CRC bon confirmé  Tue Jun 22 10:09:32 EDT 2021
+Acusse de Reception Positif Envoye  Tue Jun 22 10:09:32 EDT 2021
+Packet recu  Tue Jun 22 10:09:32 EDT 2021
+Packet avec CRC bon confirmé  Tue Jun 22 10:09:32 EDT 2021
+Acusse de Reception Positif Envoye  Tue Jun 22 10:09:32 EDT 2021
+Packet recu  Tue Jun 22 10:09:32 EDT 2021
+Packet avec CRC bon confirmé  Tue Jun 22 10:09:32 EDT 2021
+Acusse de Reception Positif Envoye  Tue Jun 22 10:09:32 EDT 2021
+Packet recu  Tue Jun 22 10:09:32 EDT 2021
+Packet avec CRC bon confirmé  Tue Jun 22 10:09:32 EDT 2021
+Acusse de Reception Positif Envoye  Tue Jun 22 10:09:32 EDT 2021
+Packet recu  Tue Jun 22 10:09:32 EDT 2021
+Packet avec CRC bon confirmé  Tue Jun 22 10:09:32 EDT 2021
+Acusse de Reception Positif Envoye  Tue Jun 22 10:09:32 EDT 2021
+Packet recu  Tue Jun 22 10:13:55 EDT 2021
+Packet avec CRC bon confirmé  Tue Jun 22 10:13:55 EDT 2021
+Acusse de Reception Positif Envoye  Tue Jun 22 10:13:55 EDT 2021
+Packet recu  Tue Jun 22 10:13:55 EDT 2021
+Packet avec CRC bon confirmé  Tue Jun 22 10:13:55 EDT 2021
+Acusse de Reception Positif Envoye  Tue Jun 22 10:13:55 EDT 2021
+Packet recu  Tue Jun 22 10:13:55 EDT 2021
+Packet avec CRC bon confirmé  Tue Jun 22 10:13:55 EDT 2021
+Acusse de Reception Positif Envoye  Tue Jun 22 10:13:55 EDT 2021
+Packet recu  Tue Jun 22 10:13:56 EDT 2021
+Packet avec CRC bon confirmé  Tue Jun 22 10:13:56 EDT 2021
+Acusse de Reception Positif Envoye  Tue Jun 22 10:13:56 EDT 2021
+Packet recu  Tue Jun 22 10:13:56 EDT 2021
+Packet avec CRC bon confirmé  Tue Jun 22 10:13:56 EDT 2021
+Acusse de Reception Positif Envoye  Tue Jun 22 10:13:56 EDT 2021
