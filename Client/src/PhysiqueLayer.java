@@ -34,6 +34,7 @@ public class PhysiqueLayer extends ProtocolLayer {
             }
             DatagramPacket message = new DatagramPacket(messageFinal,messageFinal.length, address, 25000);
 
+
             socket2.send(message);
 
             socket.setSoTimeout(3000);

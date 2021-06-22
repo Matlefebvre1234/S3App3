@@ -34,6 +34,8 @@ public class TransportLayer extends ProtocolLayer{
         ackDataLink = false;
         indexPacket =0;
         packerVerifier = true;
+        setReadyForNextPacket(true);
+
     }
 
     public ArrayList<Byte> encapsulationFragments(Packet packet, int nbFrag, double qteFrag) {
@@ -65,6 +67,7 @@ public class TransportLayer extends ProtocolLayer{
         Packet envoyerPacket = new Packet();
         envoyerPacket.setPacket(packetSegment);
 
+
         layerDessous.encapsulation(envoyerPacket);
 
         resendPacket.setPacket(packet.packet);
@@ -75,7 +78,9 @@ public class TransportLayer extends ProtocolLayer{
     @Override
     public void encapsulation(Packet packet) {
 
+        setReadyForNextPacket(false);
         double nbFragments = 1;
+
         ArrayList<Packet> listPackets = new ArrayList<>();
 
         if(packet.packet.size() > 200)
@@ -106,12 +111,18 @@ public class TransportLayer extends ProtocolLayer{
             public void run() {
                 if(layerDessous.getReadyForNextPacket() && packerVerifier)
                 {
+
                     encapsulationFragments(listPackets.get(getIndexPacket()), getIndexPacket(), finalNbFragments);
                     packerVerifier = false;
+                    setReadyForNextPacket(false);
                     System.out.println("Packet: " + getIndexPacket());
                     System.out.println("Nombre a envoyer: " + finalNbFragments);
                     IncrementeIndexPacket();
-                    if(getIndexPacket()>= listPackets.size()) executor.shutdown();
+                    if(getIndexPacket()>= listPackets.size())
+                    {
+                        executor.shutdown();
+                        indexPacket =0;
+                    }
                 }
 
             }
@@ -172,6 +183,7 @@ public class TransportLayer extends ProtocolLayer{
         {
             System.out.println("continuer envoyer fragments");
             packerVerifier = true;
+            setReadyForNextPacket(true);
             ackDataLink = true;
         }
 
@@ -179,6 +191,8 @@ public class TransportLayer extends ProtocolLayer{
             System.out.println("Erreur, renvoyer ");
             packerVerifier =false;
             ackDataLink = false;
+            setReadyForNextPacket(false);
+
         }
 
         if(convertByteArrayToInt2(packet.arrayToList(ackRes)) == 0){

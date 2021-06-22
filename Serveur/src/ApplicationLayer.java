@@ -51,6 +51,7 @@ public class ApplicationLayer extends ProtocolLayer{
     @Override
     public void desencapsulation(Packet packet) {
 
+        System.out.println("RECU APPLICATION");
         if (!nomRecu)creerFichier(packet);
         if (nomRecu) sauvegarderPacketFichier(packet);
     }
@@ -59,10 +60,12 @@ public class ApplicationLayer extends ProtocolLayer{
 
     private void creerFichier(Packet packet)
     {
+        System.out.println("Fichier creer");
         byte[] nomFichier = packet.getByte();
-        String nomFichierString  = new String(nomFichier,0,nomFichier.length-1);
+       String nomFichierString  = new String(nomFichier,0,nomFichier.length);
+        System.out.println(nomFichierString);
         try {
-            myWriter = new FileWriter("nomFichierString");
+            myWriter = new FileWriter(nomFichierString);
         } catch (IOException e) {
             e.printStackTrace();
         }

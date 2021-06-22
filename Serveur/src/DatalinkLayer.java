@@ -194,7 +194,6 @@ public class DatalinkLayer extends ProtocolLayer{
         arkEnvoi.setPacket(accuseReception);
         sauvegarderLog("Acusse de Reception Positif Envoye");
         packetEnvoyer++;
-        System.out.println("envoie Couche physique datalink");
         layerDessous.encapsulation(arkEnvoi);
 
 

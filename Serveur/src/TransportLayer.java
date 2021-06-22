@@ -135,7 +135,7 @@ public class TransportLayer extends ProtocolLayer{
 
         System.out.println("Numero: " + tempFrag);
 
-        OK = true;//desencapsulationFragments(data, tempFrag, tempqte);
+        OK = desencapsulationFragments(data, tempFrag, tempqte);
 
         //Creation accuse de reception positif
         ArrayList<Byte> accuseReception = new ArrayList<Byte>();
@@ -168,9 +168,6 @@ public class TransportLayer extends ProtocolLayer{
         Packet arkEnvoi = new Packet();
         arkEnvoi.setPacket(accuseReception);
 
-
-        System.out.println("Accuse Transport");
-        System.out.println(layerDessous.getClass());
         layerDessous.encapsulation(arkEnvoi);
 
     }
@@ -230,6 +227,17 @@ public class TransportLayer extends ProtocolLayer{
             array[i] = current;
             i++;
         }
+
+        //MAT Envoyer couche application
+
+        if(fragmentsRecus.size() == qteFrag)
+        {
+            Packet packetFinal = new Packet();
+            packetFinal.setPacket(array);
+            layerDessus.desencapsulation(packetFinal);
+            packet.afficherPacket(array);
+        }
+
 
        // System.out.println(new String(array));
 

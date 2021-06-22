@@ -21,7 +21,8 @@ public class DatalinkLayer extends ProtocolLayer{
     {
         ark = false;
         recepteurArk = false;
-        setReadyForNextPacket(true);
+        ReadyForNextPacket = true;
+
     }
 
     @Override
@@ -84,9 +85,11 @@ public class DatalinkLayer extends ProtocolLayer{
             recepteurArk = true;
             Runnable helloRunnable = new Runnable() {
                 public void run() {
+
                     if(!ark)
                     {
                         setReadyForNextPacket(false);
+
                         layerDessous.encapsulation(envoyerPacket);
 
                     }

@@ -35,7 +35,6 @@ public class PhysiqueLayer extends ProtocolLayer {
 
             }
             DatagramPacket message = new DatagramPacket(messageFinal,messageFinal.length, address, 25001);
-            packet.afficherPacket(messageFinal);
             System.out.println("ENVOI");
 
             socket2.send(message);

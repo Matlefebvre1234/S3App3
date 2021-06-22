@@ -11,8 +11,8 @@ public class Client {
 
     public static void main( String[] args) throws IOException {
         savedArgs = args;
-        if (args.length != 1) {
-            System.out.println("Usage: java QuoteClient <hostname>");
+        if (args.length != 2) {
+            System.out.println("nom hote et fichier non fourni");
             return;
         }
 
@@ -27,20 +27,23 @@ public class Client {
         Packet test = new Packet();
         test.setPacket(byteArrray);
 
-        TransportLayer transportLayer = new TransportLayer();
+       TransportLayer transportLayer = new TransportLayer();
         DatalinkLayer layer = new DatalinkLayer();
-        //ApplicationLayer application = new ApplicationLayer();
-        PhysiqueLayer physiqueLayer = new PhysiqueLayer();
-        transportLayer.setLayerDessous(layer);
-        layer.setLayerDessus(transportLayer);
-        layer.setLayerDessous(physiqueLayer);
-        physiqueLayer.setLayerDessus(layer);
+       ApplicationLayer application = new ApplicationLayer();
+       PhysiqueLayer physiqueLayer = new PhysiqueLayer();
+       application.setLayerDessous(transportLayer);
+       transportLayer.setLayerDessus(application);
+       transportLayer.setLayerDessous(layer);
+       layer.setLayerDessus(transportLayer);
+       layer.setLayerDessous(physiqueLayer);
+       physiqueLayer.setLayerDessus(layer);
 
-        transportLayer.encapsulation(test);
+
+        application.envoyerFichierServeur(args[1]);
 
 
 
-        //application.encapsulation("file.txt");
+        //application.encapsulation("mathieu.txt");
 
 
 

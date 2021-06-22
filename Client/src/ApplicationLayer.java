@@ -1,24 +1,64 @@
 import java.io.*;
+import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class ApplicationLayer extends ProtocolLayer{
 
     FileWriter myWriter;
+    int indexPacket;
     boolean nomRecu;
+    ScheduledExecutorService executorapp;
+    boolean ReadyForNextPacket;
     public ApplicationLayer()
     {
         nomRecu =false;
+        ReadyForNextPacket = false;
+        indexPacket =0;
+
     }
 
 
 
     public void envoyerFichierServeur(String nomFichier)
     {
+
         byte[] fichierenByte = lireFichier(nomFichier).toString().getBytes();
-        Packet packet = new Packet();
-        packet.setPacket(fichierenByte);
-        this.encapsulation(packet);
+        byte[] nomFichierByte = nomFichier.getBytes();
+
+        ArrayList<byte[]> nomEtFichier = new ArrayList<byte[]>();
+
+        nomEtFichier.add(nomFichierByte);
+        nomEtFichier.add(fichierenByte);
+
+        //Envoyer nom et Packet
+        Runnable envoyerPacket2 = new Runnable() {
+            public void run() {
+                if(layerDessous.getReadyForNextPacket() )
+                {
+                    Packet packet = new Packet();
+                    packet.setPacket(nomEtFichier.get(getIndexPacket()));
+                    IncrementeIndexPacket();
+                    encapsulation(packet);
+                }
+                if(getIndexPacket() >=2) executorapp.shutdown();
+
+            }
+        };
+        executorapp = Executors.newScheduledThreadPool(1);
+        executorapp.scheduleAtFixedRate(envoyerPacket2, 0, 200, TimeUnit.MILLISECONDS);
     };
 
+    private int getIndexPacket()
+    {
+        return indexPacket;
+    }
+
+    private void IncrementeIndexPacket()
+    {
+        indexPacket++;
+    }
 
     public  void sauvegarderPacketFichier(Packet packet)
     {
@@ -95,4 +135,5 @@ public class ApplicationLayer extends ProtocolLayer{
         }
         return null;
     }
+
 }
