@@ -187,7 +187,7 @@ public class TransportLayer extends ProtocolLayer{
 
         if(OK == true){
 
-            System.out.println("ca marche, retour");
+            System.out.println("Bon fragment, retour");
             accuse = 1;
 
             //Envoyer data couche supérieur
@@ -199,7 +199,7 @@ public class TransportLayer extends ProtocolLayer{
         }
 
         else{
-            System.out.println("ca marche pas");
+            System.out.println("Mauvais fragment");
             accuse = 0;
         }
 
@@ -313,7 +313,7 @@ public class TransportLayer extends ProtocolLayer{
 
             Packet packetFinal = new Packet();
             packetFinal.setPacket(array);
-            packet.afficherPacket(array);
+            //packet.afficherPacket(array);
             fragmentsRecus.clear();
             nombreFragments = 1;
             packetTotal.clear();
